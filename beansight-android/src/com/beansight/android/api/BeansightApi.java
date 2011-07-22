@@ -2,7 +2,6 @@ package com.beansight.android.api;
 
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -11,11 +10,10 @@ import android.util.Log;
 
 import com.beansight.android.http.Http;
 import com.beansight.android.http.Http.HttpRequestBuilder;
-import com.beansight.android.models.InsightDetail;
 import com.beansight.android.models.InsightDetailResponse;
-import com.beansight.android.models.InsightListItem;
 import com.beansight.android.models.InsightListItemResponse;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class BeansightApi {
 
@@ -80,8 +78,9 @@ public class BeansightApi {
 		} catch (NotAuthenticatedException e) {
 			// can't happen : list access isn't a protected resource
 		}
-		Gson gson = new Gson();
-//	        Type insightListItemType = new TypeToken<InsightListItemResponse>() {}.getType();
+		Gson gson = new GsonBuilder()
+	     //.setDateFormat(DateFormat.LONG)
+	     .create();
 		insightListResponse = gson.fromJson(result, InsightListItemResponse.class);
 	        
 		return insightListResponse;

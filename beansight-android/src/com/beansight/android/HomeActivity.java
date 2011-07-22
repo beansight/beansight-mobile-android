@@ -58,7 +58,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		InsightListItemResponse insightListItemResponse = null;
 		
 		try {
-		insightListItemResponse = BeansightApi.list(accessToken, insightList.size(), INSIGHT_NUMBER, null, null, null, null, null, null);
+		insightListItemResponse = BeansightApi.list(accessToken, insightList.size(), INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
 			// if not authenticated, load the WebView Activity
 			if (insightListItemResponse != null && !insightListItemResponse.getMeta().isAuthenticated()) {
 				startActivity( new Intent(this, WebViewActivity.class) );
@@ -87,7 +87,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     private void next() {
     	if(currentInsightIndex + 1 < insightList.size()) {
     		currentInsightIndex++;
-    		insightText.setText(insightList.get(currentInsightIndex).getContent());
+    		insightText.setText(insightList.get(currentInsightIndex).getInsightText());
     	} else {
     		fetchNextInsights();
     		next();
@@ -97,7 +97,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     private void previous() {
     	if(currentInsightIndex - 1 > 0) {
     		currentInsightIndex--;
-    		insightText.setText(insightList.get(currentInsightIndex).getContent());
+    		insightText.setText(insightList.get(currentInsightIndex).getInsightText());
     	}
     }
     
