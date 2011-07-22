@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Home!</string>
+    <string name="app_name">BeansightAndroid</string>
+    <string name="beansightLogin">Beansight Login</string>
+    <string name="show_insights">Show Insights</string>
+</resources>
