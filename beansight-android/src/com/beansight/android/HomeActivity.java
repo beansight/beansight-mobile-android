@@ -27,8 +27,8 @@ import com.beansight.android.models.InsightListItem;
 public class HomeActivity extends Activity implements View.OnClickListener{
 
 	private Context cxt;
-	private InsightListPagerAdapter insightListAdapter;
-	private ViewPager awesomePager;
+	private InsightListPagerAdapter pagerAdapter;
+	private ViewPager pager;
 	
 	/** store the list of downloaded insights */
 	private List<InsightListItem> insightList;
@@ -65,13 +65,10 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		fetchNextInsights();
 		
         
-        insightListAdapter = new InsightListPagerAdapter();
-        awesomePager = (ViewPager) findViewById(R.id.insightPager);
-        awesomePager.setAdapter(insightListAdapter);
-        
-        //insightListAdapter.getItemPosition(object)
-        
-        next();
+        pagerAdapter = new InsightListPagerAdapter();
+        pager = (ViewPager) findViewById(R.id.insightPager);
+        pager.setAdapter(pagerAdapter);
+        pager.setOnPageChangeListener(new MyPageChangeListener());
     }
     
     /** call Beansight API to get the next insight, and append them to the list */
@@ -125,15 +122,13 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     
     private void next() {
     	if(currentInsightIndex + 1 < insightList.size()) {
-    		currentInsightIndex++;
-    		awesomePager.setCurrentItem(currentInsightIndex);
+    		pager.setCurrentItem(currentInsightIndex + 1);
     	}
     }
     
     private void previous() {
     	if(currentInsightIndex - 1 > 0) {
-    		currentInsightIndex--;
-    		awesomePager.setCurrentItem(currentInsightIndex);
+    		pager.setCurrentItem(currentInsightIndex - 1);
     	}
     }
     
@@ -158,7 +153,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 
 		@Override
 		public Object instantiateItem(View collection, int position) {
-			// position is the position of the element next to the newly displayed element
+			// position is the position of the element that will come after the newly displayed element
 			if( position + 1 < insightList.size() ) {
 				fetchNextInsights();
 			}
@@ -198,6 +193,13 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		@Override
 		public void finishUpdate(View arg0) {}
 
+	}
+	
+	private class MyPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
+        @Override
+        public void onPageSelected(int position) {
+        	currentInsightIndex = position;
+        }
 	}
 
 }
