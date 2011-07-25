@@ -13,6 +13,5 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="WebViewActivity"/>
-		<activity android:name="InsightListActivity"></activity>
 	</application>
 </manifest>

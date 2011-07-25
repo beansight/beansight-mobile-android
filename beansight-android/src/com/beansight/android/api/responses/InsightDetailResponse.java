@@ -1,10 +1,13 @@
-package com.beansight.android.models;
+package com.beansight.android.api.responses;
+
+import com.beansight.android.models.InsightDetail;
 
 public class InsightDetailResponse {
 
 	private InsightDetail response;
 	private Meta meta;
-
+	
+	
 	public InsightDetail getResponse() {
 		return response;
 	}
@@ -20,5 +23,4 @@ public class InsightDetailResponse {
 	public void setMeta(Meta meta) {
 		this.meta = meta;
 	}
-	
 }

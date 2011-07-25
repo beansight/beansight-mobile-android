@@ -1,4 +1,4 @@
-package com.beansight.android.models;
+package com.beansight.android.api.responses;
 
 public class Meta {
 	private boolean authenticated;

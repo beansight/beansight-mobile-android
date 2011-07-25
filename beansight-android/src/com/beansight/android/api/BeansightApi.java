@@ -8,10 +8,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
+import com.beansight.android.api.responses.InsightDetailResponse;
+import com.beansight.android.api.responses.InsightListResponse;
+import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.http.Http;
 import com.beansight.android.http.Http.HttpRequestBuilder;
-import com.beansight.android.models.InsightDetailResponse;
-import com.beansight.android.models.InsightListItemResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -20,32 +21,29 @@ public class BeansightApi {
 	final private static HttpClient client = new DefaultHttpClient(); 
 	private static String domain = "http://www.beansight.com";
 	
+	private static HttpRequestBuilder generateRequest(String apiAction, String accessToken) {
+		String url = String.format("%s/api/" + apiAction, domain);
+		return Http.get(url).use(client).data("access_token", accessToken);
+	}
 	
-	public static InsightDetailResponse show(String accessToken, String id) throws NotAuthenticatedException {
+	public static InsightDetailResponse show(String accessToken, String id) throws NotAuthenticatedException, IOException {
 		Log.v("BeansightApi.show", String.format("access_token=%s id=%s" , accessToken, id));
 		
 		InsightDetailResponse insightDetailResponse = null;
-		String url = String.format("%s/api/insights/show", domain);
-		try {
-			String result = Http.get(url).use(client)
-				.data("access_token", accessToken)
-				.data("id", id)
-				.asString();
-			Gson gson = new Gson();
-			insightDetailResponse = gson.fromJson(result, InsightDetailResponse.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String result = generateRequest("insights/show", accessToken)
+			.data("id", id)
+			.asString();
+		Gson gson = new Gson();
+		insightDetailResponse = gson.fromJson(result, InsightDetailResponse.class);
 		
 		return insightDetailResponse;
 	}
 	
-	public static InsightListItemResponse list(String accessToken, Integer from,
+	public static InsightListResponse list(String accessToken, Integer from,
 			Integer number, String sort, Integer category,
 			String vote, String topic, Boolean closed, Boolean created) throws IOException {
 		
-		String url = String.format("%s/api/insights/list", domain);
-		HttpRequestBuilder httpRequestbuilder = Http.get(url).use(client).data("access_token", accessToken);
+		HttpRequestBuilder httpRequestbuilder = generateRequest("insights/list", accessToken);
 		if(from!=null) {
 			httpRequestbuilder.data("from", from.toString());
 		}
@@ -71,7 +69,7 @@ public class BeansightApi {
 			httpRequestbuilder.data("created", created.toString());
 		}
 		
-		InsightListItemResponse insightListResponse = null;
+		InsightListResponse insightListResponse = null;
 		String result = "";
 		try {
 			result = httpRequestbuilder.asString();
@@ -81,9 +79,30 @@ public class BeansightApi {
 		Gson gson = new GsonBuilder()
 	     //.setDateFormat(DateFormat.LONG)
 	     .create();
-		insightListResponse = gson.fromJson(result, InsightListItemResponse.class);
+		insightListResponse = gson.fromJson(result, InsightListResponse.class);
 	        
 		return insightListResponse;
+	}
+	
+	
+	public static InsightVoteResponse agree(String accessToken, String id) throws NotAuthenticatedException, IOException {
+		InsightVoteResponse insightVoteResponse = null;
+		String result = generateRequest("insights/agree", accessToken)
+			.data("id", id)
+			.asString();
+		Gson gson = new Gson();
+		insightVoteResponse = gson.fromJson(result, InsightVoteResponse.class);
+		return insightVoteResponse;
+	}
+	
+	public static InsightVoteResponse disagree(String accessToken, String id) throws NotAuthenticatedException, IOException {
+		InsightVoteResponse insightVoteResponse = null;
+		String result = generateRequest("insights/disagree", accessToken)
+			.data("id", id)
+			.asString();
+		Gson gson = new Gson();
+		insightVoteResponse = gson.fromJson(result, InsightVoteResponse.class);
+		return insightVoteResponse;
 	}
 	
 }

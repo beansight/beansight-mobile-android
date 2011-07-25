@@ -1,8 +1,10 @@
-package com.beansight.android.models;
+package com.beansight.android.api.responses;
 
 import java.util.List;
 
-public class InsightListItemResponse {
+import com.beansight.android.models.InsightListItem;
+
+public class InsightListResponse {
 
 	private List<InsightListItem> response;
 	private Meta meta;

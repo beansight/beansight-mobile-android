@@ -13,8 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beansight.android.api.BeansightApi;
+import com.beansight.android.api.NotAuthenticatedException;
+import com.beansight.android.api.responses.InsightListResponse;
+import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.models.InsightListItem;
-import com.beansight.android.models.InsightListItemResponse;
 
 public class HomeActivity extends Activity implements View.OnClickListener{
 	
@@ -29,6 +31,10 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	
 	private String accessToken;
 
+	public enum VoteState {
+		AGREE, DISAGREE
+	}
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,10 +61,10 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     
     /** call Beansight API to get the next insight, and append them to the list */
     private void fetchNextInsights() {
-		InsightListItemResponse insightListItemResponse = null;
+		InsightListResponse insightListItemResponse = null;
 		
 		try {
-		insightListItemResponse = BeansightApi.list(accessToken, insightList.size(), INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
+			insightListItemResponse = BeansightApi.list(accessToken, insightList.size(), INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
 			// if not authenticated, load the WebView Activity
 			if (insightListItemResponse != null && !insightListItemResponse.getMeta().isAuthenticated()) {
 				startActivity( new Intent(this, WebViewActivity.class) );
@@ -75,13 +81,31 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     }
 
     private void agree() {
-    	Toast.makeText(this, "agree", Toast.LENGTH_SHORT).show();
-    	next();
+    	vote(VoteState.AGREE);
     }
     
     private void disagree() {
-    	Toast.makeText(this, "disagree", Toast.LENGTH_SHORT).show();
-    	next();
+    	vote(VoteState.DISAGREE);
+    }
+    
+    private void vote(VoteState state) {
+    	InsightVoteResponse insightVoteResponse = null;
+		try {
+			if(state == VoteState.AGREE) {
+				insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
+			} else if(state == VoteState.DISAGREE) {
+				insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
+			}
+		} catch (NotAuthenticatedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Toast.makeText(this, insightVoteResponse.getResponse().getVoteState(), Toast.LENGTH_SHORT).show();    	
+		next();
     }
     
     private void next() {
