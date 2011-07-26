@@ -14,14 +14,10 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beansight.android.api.BeansightApi;
-import com.beansight.android.api.NotAuthenticatedException;
 import com.beansight.android.api.responses.InsightListResponse;
-import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.models.InsightListItem;
 
 public class HomeActivity extends Activity implements View.OnClickListener{
@@ -160,7 +156,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 			
 			TextView tv = new TextView(cxt);
 			tv.setText(insightList.get(position).getInsightText());
-			tv.setTextColor(Color.WHITE);
 			tv.setTextSize(30);
 			
 			((ViewPager) collection).addView(tv,0);

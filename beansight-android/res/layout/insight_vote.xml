@@ -3,35 +3,38 @@
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent"
 	android:orientation="vertical"
-	android:id="@+id/linearLayout1" 
-	android:background="#a4c639">
+	>
 	
 	<android.support.v4.view.ViewPager
-    	android:layout_height="wrap_content"
+		android:id="@+id/insightPager" 
     	android:layout_width="fill_parent" 
-		android:layout_weight="2"    	
-    	android:id="@+id/insightPager"/>
+		android:layout_weight="3"
+		android:layout_height="0dp"
+		/>
 		
 	<LinearLayout 
 		android:id="@+id/agreeDisagreeButtons"
 		android:layout_width="fill_parent"
 		android:layout_weight="1" 
-		android:layout_height="wrap_content">
+		android:layout_height="0dp"
+		>
 		
 		<Button 
 			android:text="Agree"
-			android:layout_weight="1"
 			android:id="@+id/buttonAgree"
 			android:drawableTop="@drawable/agree" 
-			android:layout_height="fill_parent"
-			android:layout_width="wrap_content"></Button>
+			android:layout_height="fill_parent" 
+			android:layout_weight="1" 
+			android:layout_width="0dp"
+			></Button>
 		<Button 
 			android:text="Disagree" 
-			android:layout_weight="1"
 			android:id="@+id/buttonDisagree"
 			android:drawableTop="@drawable/disagree"
 			android:layout_height="fill_parent"
-			android:layout_width="wrap_content"></Button>
+			android:layout_weight="1" 
+			android:layout_width="0dp"
+			></Button>
 	
 	</LinearLayout>
 </LinearLayout>
