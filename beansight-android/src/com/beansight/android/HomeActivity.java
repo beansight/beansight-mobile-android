@@ -6,8 +6,8 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -23,13 +23,12 @@ import com.beansight.android.models.InsightListItem;
 public class HomeActivity extends Activity implements View.OnClickListener{
 
 	private Context cxt;
-	private InsightListPagerAdapter pagerAdapter;
 	private ViewPager pager;
 	
 	/** store the list of downloaded insights */
 	private List<InsightListItem> insightList;
 	/** the number of insight to ask at every list calls */
-	private static final int INSIGHT_NUMBER = 30;
+	private static final int INSIGHT_NUMBER = 6;
 	/** iterator pointing to the currently displayed insight */
 	private int currentInsightIndex = 0;
 	
@@ -49,43 +48,21 @@ public class HomeActivity extends Activity implements View.OnClickListener{
         
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
 		accessToken = prefs.getString("access_token", null);
-        
-		View b;
-		b = (View) findViewById(R.id.buttonAgree);
-		b.setOnClickListener(this);
-		b = (View) findViewById(R.id.buttonDisagree);
-		b.setOnClickListener(this);
 
 		insightList = new ArrayList<InsightListItem>();
 		// get an iterator
 		fetchNextInsights();
 		
-        
-        pagerAdapter = new InsightListPagerAdapter();
-        pager = (ViewPager) findViewById(R.id.insightPager);
-        pager.setAdapter(pagerAdapter);
-        pager.setOnPageChangeListener(new MyPageChangeListener());
+		View b;
+		b = (View) findViewById(R.id.buttonAgree);
+		b.setOnClickListener(this);
+		b = (View) findViewById(R.id.buttonDisagree);
+		b.setOnClickListener(this);
     }
     
-    /** call Beansight API to get the next insight, and append them to the list */
+    
     private void fetchNextInsights() {
-		InsightListResponse insightListItemResponse = null;
-		
-		try {
-			insightListItemResponse = BeansightApi.list(accessToken, insightList.size(), INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
-			// if not authenticated, load the WebView Activity
-			if (insightListItemResponse != null && !insightListItemResponse.getMeta().isAuthenticated()) {
-				startActivity( new Intent(this, WebViewActivity.class) );
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			// FIXME should handle this better ...
-		}
-		
-        // populate the insight list
-		if (insightListItemResponse != null) {
-			insightList.addAll(insightListItemResponse.getResponse());
-		}
+    	new ListTask().execute(insightList.size());
     }
 
     private void agree() {
@@ -144,7 +121,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		@Override
 		public Object instantiateItem(View collection, int position) {
 			// position is the position of the element that will come after the newly displayed element
-			if( position + 1 < insightList.size() ) {
+			if( position + 1 >= insightList.size() ) {
 				fetchNextInsights();
 			}
 			
@@ -184,7 +161,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 
 		@Override
 		public void finishUpdate(View arg0) {}
-
+		
 	}
 	
 	private class MyPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
@@ -192,6 +169,50 @@ public class HomeActivity extends Activity implements View.OnClickListener{
         public void onPageSelected(int position) {
         	currentInsightIndex = position;
         }
+	}
+
+	/** Create a thread to call the Beansight List API to get the next insight, and append them to the list */
+	private class ListTask extends AsyncTask<Integer, Void, InsightListResponse> {
+		/**
+		 * @param from : 
+		 */
+	    protected InsightListResponse doInBackground(Integer... from) {
+			InsightListResponse insightListItemResponse = null;
+			try {
+				insightListItemResponse = BeansightApi.list(accessToken, from[0], INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
+				// if not authenticated, load the WebView Activity
+				if (insightListItemResponse != null && !insightListItemResponse.getMeta().isAuthenticated()) {
+					// TODO 
+				//	startActivity( new Intent(this, WebViewActivity.class) );
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return insightListItemResponse;
+	    }
+	    
+	    protected void onPostExecute(InsightListResponse response) {
+
+	    	//TODO : this is temporary, we should display a waiting screen (fragment?) 
+	    	boolean createPager = false;
+	    	if( insightList.isEmpty() ) {
+	    		createPager = true;
+	    	}
+	    	
+	        // populate the insight list
+			if (response != null) {
+				insightList.addAll(response.getResponse());
+			}
+			
+			if(createPager) {
+	    		InsightListPagerAdapter pagerAdapter = new InsightListPagerAdapter();
+	            pager = (ViewPager) findViewById(R.id.insightPager);
+	            pager.setAdapter(pagerAdapter);
+	            pager.setOnPageChangeListener(new MyPageChangeListener());
+			}
+	    }
+
 	}
 	
 }
