@@ -30,11 +30,14 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	/** store the list of downloaded insights */
 	private List<InsightListItem> insightList;
 	/** the number of insight to ask at every list calls */
-	private static final int INSIGHT_NUMBER = 30;
+	private static final int INSIGHT_NUMBER = 10;
 	/** starts downloading new insight when we are INSIGHT_NUMBER_START_DOWNLOAD insights far from the end of the list */
 	private static final int INSIGHT_NUMBER_START_DOWNLOAD = 5;
 	/** iterator pointing to the currently displayed insight */
 	private int currentInsightIndex = 0;
+	
+	/** is the system waiting for new insights to come ? */
+	private boolean fetchingNewInsights = false;
 	
 	private String accessToken;
 
@@ -65,6 +68,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     
     
     private void fetchNextInsights() {
+    	fetchingNewInsights = true;
     	new ListTask().execute(insightList.size());
     }
 
@@ -109,7 +113,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		@Override
 		public Object instantiateItem(View collection, int position) {
 			// position is the position of the element that will come after the newly displayed element
-			if( position + INSIGHT_NUMBER_START_DOWNLOAD >= insightList.size() ) {
+			if( position + INSIGHT_NUMBER_START_DOWNLOAD >= insightList.size() && !fetchingNewInsights ) {
 				fetchNextInsights();
 			}
 			
@@ -181,7 +185,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	    }
 	    
 	    protected void onPostExecute(InsightListResponse response) {
-
 	    	//TODO : this is temporary, we should display a waiting screen (fragment?) 
 	    	boolean createPager = false;
 	    	if( insightList.isEmpty() ) {
@@ -199,6 +202,8 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	            pager.setAdapter(pagerAdapter);
 	            pager.setOnPageChangeListener(new MyPageChangeListener());
 			}
+			
+			fetchingNewInsights = false;
 	    }
 	}
 	
