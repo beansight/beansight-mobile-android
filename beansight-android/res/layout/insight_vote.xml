@@ -19,22 +19,20 @@
 		android:layout_height="0dp"
 		>
 		
-		<Button 
-			android:text="Agree"
+		<ImageButton 
 			android:id="@+id/buttonAgree"
-			android:drawableTop="@drawable/agree" 
+			android:src="@drawable/agree" 
 			android:layout_height="fill_parent" 
 			android:layout_weight="1" 
 			android:layout_width="0dp"
-			></Button>
-		<Button 
-			android:text="Disagree" 
+			></ImageButton>
+		<ImageButton 
 			android:id="@+id/buttonDisagree"
-			android:drawableTop="@drawable/disagree"
+			android:src="@drawable/disagree"
 			android:layout_height="fill_parent"
 			android:layout_weight="1" 
 			android:layout_width="0dp"
-			></Button>
+			></ImageButton>
 	
 	</LinearLayout>
 </LinearLayout>

@@ -8,11 +8,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -122,12 +122,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     	}
     }
     
-    private void previous() {
-    	if(currentInsightIndex - 1 > 0) {
-    		pager.setCurrentItem(currentInsightIndex - 1);
-    	}
-    }
-    
 	public void onClick(View v) {
 		switch (v.getId()) {
         case R.id.buttonAgree:
@@ -154,13 +148,16 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 				fetchNextInsights();
 			}
 			
-			TextView tv = new TextView(cxt);
+			// inflate a view from the XML layouts
+			LayoutInflater inflater = (LayoutInflater)cxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View insightContentView = inflater.inflate(R.layout.insight_content, null);
+			// set the insight text
+			TextView tv = (TextView) insightContentView.findViewById(R.id.insightText);
 			tv.setText(insightList.get(position).getInsightText());
-			tv.setTextSize(30);
 			
-			((ViewPager) collection).addView(tv,0);
+			((ViewPager) collection).addView(insightContentView,0);
 			
-			return tv;
+			return insightContentView;
 		}
 
 		@Override
@@ -196,5 +193,5 @@ public class HomeActivity extends Activity implements View.OnClickListener{
         	currentInsightIndex = position;
         }
 	}
-
+	
 }
