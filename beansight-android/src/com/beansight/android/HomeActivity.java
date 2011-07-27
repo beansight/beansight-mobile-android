@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -66,6 +67,9 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		b.setOnClickListener(this);
     }
     
+    private void openConnectScreen() {
+    	startActivity( new Intent(this, WebViewActivity.class) );
+    }
     
     private void fetchNextInsights() {
     	fetchingNewInsights = true;
@@ -172,11 +176,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 			InsightListResponse insightListItemResponse = null;
 			try {
 				insightListItemResponse = BeansightApi.list(accessToken, from[0], INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
-				// if not authenticated, load the WebView Activity
-				if (insightListItemResponse != null && !insightListItemResponse.getMeta().isAuthenticated()) {
-					// TODO 
-				//	startActivity( new Intent(this, WebViewActivity.class) );
-				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -185,6 +184,12 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	    }
 	    
 	    protected void onPostExecute(InsightListResponse response) {
+	    	// if not authenticated, load the WebView Activity
+	    	if (response != null && !response.getMeta().isAuthenticated()) {
+	    		openConnectScreen();
+	    		return;
+	    	}
+	    	
 	    	//TODO : this is temporary, we should display a waiting screen (fragment?) 
 	    	boolean createPager = false;
 	    	if( insightList.isEmpty() ) {
