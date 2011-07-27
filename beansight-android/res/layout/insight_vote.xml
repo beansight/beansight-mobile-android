@@ -21,7 +21,7 @@
 		
 		<ImageButton 
 			android:id="@+id/buttonAgree"
-			android:src="@drawable/agree" 
+			android:src="@drawable/agree"
 			android:layout_height="fill_parent" 
 			android:layout_weight="1" 
 			android:layout_width="0dp"
