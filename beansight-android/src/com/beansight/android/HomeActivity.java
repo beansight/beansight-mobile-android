@@ -17,7 +17,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.beansight.android.api.BeansightApi;
+import com.beansight.android.api.NotAuthenticatedException;
 import com.beansight.android.api.responses.InsightListResponse;
+import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.models.InsightListItem;
 
 public class HomeActivity extends Activity implements View.OnClickListener{
@@ -28,13 +30,15 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	/** store the list of downloaded insights */
 	private List<InsightListItem> insightList;
 	/** the number of insight to ask at every list calls */
-	private static final int INSIGHT_NUMBER = 6;
+	private static final int INSIGHT_NUMBER = 30;
+	/** starts downloading new insight when we are INSIGHT_NUMBER_START_DOWNLOAD insights far from the end of the list */
+	private static final int INSIGHT_NUMBER_START_DOWNLOAD = 5;
 	/** iterator pointing to the currently displayed insight */
 	private int currentInsightIndex = 0;
 	
 	private String accessToken;
 
-	public enum VoteState {
+	public enum VotePosition {
 		AGREE, DISAGREE
 	}
 	
@@ -50,7 +54,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		accessToken = prefs.getString("access_token", null);
 
 		insightList = new ArrayList<InsightListItem>();
-		// get an iterator
 		fetchNextInsights();
 		
 		View b;
@@ -66,31 +69,16 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     }
 
     private void agree() {
-    	vote(VoteState.AGREE);
+    	vote(VotePosition.AGREE);
     }
     
     private void disagree() {
-    	vote(VoteState.DISAGREE);
+    	vote(VotePosition.DISAGREE);
     }
     
-    private void vote(VoteState state) {
-//    	InsightVoteResponse insightVoteResponse = null;
-//		try {
-//			if(state == VoteState.AGREE) {
-//				insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
-//			} else if(state == VoteState.DISAGREE) {
-//				insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
-//			}
-//		} catch (NotAuthenticatedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		Toast.makeText(this, insightVoteResponse.getResponse().getVoteState(), Toast.LENGTH_SHORT).show();    	
-		next();
+    private void vote(VotePosition state) {
+    	new VoteTask().execute(state);
+    	next();
     }
     
     private void next() {
@@ -121,7 +109,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		@Override
 		public Object instantiateItem(View collection, int position) {
 			// position is the position of the element that will come after the newly displayed element
-			if( position + 1 >= insightList.size() ) {
+			if( position + INSIGHT_NUMBER_START_DOWNLOAD >= insightList.size() ) {
 				fetchNextInsights();
 			}
 			
@@ -212,7 +200,26 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	            pager.setOnPageChangeListener(new MyPageChangeListener());
 			}
 	    }
-
+	}
+	
+	/** Create a thread and vote the given position on the given insight */
+	private class VoteTask extends AsyncTask<VotePosition, Void, InsightVoteResponse> {
+		@Override
+		protected InsightVoteResponse doInBackground(VotePosition... state) {
+	    	InsightVoteResponse insightVoteResponse = null;
+			try {
+				if(state[0] == VotePosition.AGREE) {
+					insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
+				} else if(state[0] == VotePosition.DISAGREE) {
+					insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
+				}
+			} catch (NotAuthenticatedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return insightVoteResponse;
+		}
 	}
 	
 }
