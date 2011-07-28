@@ -15,6 +15,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.beansight.android.api.BeansightApi;
@@ -23,7 +26,7 @@ import com.beansight.android.api.responses.InsightListResponse;
 import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.models.InsightListItem;
 
-public class HomeActivity extends Activity implements View.OnClickListener{
+public class HomeActivity extends Activity {
 
 	private Context cxt;
 	private ViewPager pager;
@@ -60,11 +63,32 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		insightList = new ArrayList<InsightListItem>();
 		fetchNextInsights();
 		
-		View b;
-		b = (View) findViewById(R.id.buttonAgree);
-		b.setOnClickListener(this);
-		b = (View) findViewById(R.id.buttonDisagree);
-		b.setOnClickListener(this);
+		// attach click listeners to buttons
+		ImageButton ib;
+		ib = (ImageButton) findViewById(R.id.buttonAgree);
+		ib.setOnClickListener( new OnClickListener() {
+		    public void onClick(View v) {
+		        agree();
+		    }
+		});
+		ib = (ImageButton) findViewById(R.id.buttonDisagree);
+		ib.setOnClickListener( new OnClickListener() {
+			public void onClick(View v) {
+				disagree();
+			}
+		});
+		ib = (ImageButton) findViewById(R.id.buttonPrevious);
+		ib.setOnClickListener( new OnClickListener() {
+		    public void onClick(View v) {
+		        previous();
+		    }
+		});
+		ib = (ImageButton) findViewById(R.id.buttonNext);
+		ib.setOnClickListener( new OnClickListener() {
+		    public void onClick(View v) {
+		        next();
+		    }
+		});
     }
     
     private void openConnectScreen() {
@@ -95,17 +119,12 @@ public class HomeActivity extends Activity implements View.OnClickListener{
     	}
     }
     
-	public void onClick(View v) {
-		switch (v.getId()) {
-        case R.id.buttonAgree:
-        	agree();
-        	break;
-        case R.id.buttonDisagree:
-        	disagree();
-        	break;
-		}
-	}
-
+    private void previous() {
+    	if(currentInsightIndex > 0) {
+    		pager.setCurrentItem(currentInsightIndex -1);
+    	}
+    }
+    
 	// see http://geekyouup.blogspot.com/2011/07/viewpager-example-from-paug.html
 	private class InsightListPagerAdapter extends PagerAdapter {
 

@@ -3,4 +3,5 @@
     <string name="app_name">Beansight</string>
     <string name="beansightLogin">Beansight: login</string>
     <string name="show_insights">Show Insights</string>
+    <string name="title_prediction">Prediction</string>
 </resources>

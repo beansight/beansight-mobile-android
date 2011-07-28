@@ -15,6 +15,7 @@ public class InsightListItem {
 	private int agreeCount;
 	private int disagreeCount;
 	private int commentCount;
+	private String lastCurrentUserVote;
 	
 	public String getId() {
 		return id;
@@ -70,7 +71,12 @@ public class InsightListItem {
 	public void setCommentCount(int commentCount) {
 		this.commentCount = commentCount;
 	}
-	
+	public String getLastCurrentUserVote() {
+		return lastCurrentUserVote;
+	}
+	public void setLastCurrentUserVote(String lastCurrentUserVote) {
+		this.lastCurrentUserVote = lastCurrentUserVote;
+	}
 	/** Return the date + content */
 	public String getInsightText() {
 		return "On " + getEndDate().toLocaleString() + ", " + getContent(); 
