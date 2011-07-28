@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.beansight.android.api.BeansightApi;
@@ -39,6 +40,9 @@ public class HomeActivity extends Activity {
 	private static final int INSIGHT_NUMBER_START_DOWNLOAD = 5;
 	/** iterator pointing to the currently displayed insight */
 	private int currentInsightIndex = 0;
+	
+	private RadioButton radioAgree;
+	private RadioButton radioDisagree;
 	
 	/** is the system waiting for new insights to come ? */
 	private boolean fetchingNewInsights = false;
@@ -63,28 +67,27 @@ public class HomeActivity extends Activity {
 		insightList = new ArrayList<InsightListItem>();
 		fetchNextInsights();
 		
-		// attach click listeners to buttons
-		ImageButton ib;
-		ib = (ImageButton) findViewById(R.id.buttonAgree);
-		ib.setOnClickListener( new OnClickListener() {
+		// attach click listeners to radio buttons
+		radioAgree = (RadioButton) findViewById(R.id.buttonAgree);
+		radioAgree.setOnClickListener( new OnClickListener() {
 		    public void onClick(View v) {
 		        agree();
 		    }
 		});
-		ib = (ImageButton) findViewById(R.id.buttonDisagree);
-		ib.setOnClickListener( new OnClickListener() {
+		radioDisagree = (RadioButton) findViewById(R.id.buttonDisagree);
+		radioDisagree.setOnClickListener( new OnClickListener() {
 			public void onClick(View v) {
 				disagree();
 			}
 		});
-		ib = (ImageButton) findViewById(R.id.buttonPrevious);
-		ib.setOnClickListener( new OnClickListener() {
+		
+		// attach the listeners to the previous and next buttons
+		((ImageButton) findViewById(R.id.buttonPrevious)).setOnClickListener( new OnClickListener() {
 		    public void onClick(View v) {
 		        previous();
 		    }
 		});
-		ib = (ImageButton) findViewById(R.id.buttonNext);
-		ib.setOnClickListener( new OnClickListener() {
+		((ImageButton) findViewById(R.id.buttonNext)).setOnClickListener( new OnClickListener() {
 		    public void onClick(View v) {
 		        next();
 		    }
@@ -114,15 +117,22 @@ public class HomeActivity extends Activity {
     }
     
     private void next() {
+    	resetVoteState();
     	if(currentInsightIndex + 1 < insightList.size()) {
     		pager.setCurrentItem(currentInsightIndex + 1);
     	}
     }
     
     private void previous() {
+    	resetVoteState();
     	if(currentInsightIndex > 0) {
     		pager.setCurrentItem(currentInsightIndex -1);
     	}
+    }
+    
+    private void resetVoteState() {
+    	radioAgree.setChecked(false);
+    	radioDisagree.setChecked(false);
     }
     
 	// see http://geekyouup.blogspot.com/2011/07/viewpager-example-from-paug.html
@@ -236,17 +246,17 @@ public class HomeActivity extends Activity {
 		@Override
 		protected InsightVoteResponse doInBackground(VotePosition... state) {
 	    	InsightVoteResponse insightVoteResponse = null;
-			try {
-				if(state[0] == VotePosition.AGREE) {
-					insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
-				} else if(state[0] == VotePosition.DISAGREE) {
-					insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
-				}
-			} catch (NotAuthenticatedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if(state[0] == VotePosition.AGREE) {
+//					insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
+//				} else if(state[0] == VotePosition.DISAGREE) {
+//					insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
+//				}
+//			} catch (NotAuthenticatedException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			return insightVoteResponse;
 		}
 	}

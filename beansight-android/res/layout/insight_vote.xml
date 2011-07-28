@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="fill_parent"
-	android:layout_width="fill_parent"
+	android:layout_width="fill_parent" 
 	android:orientation="vertical"
 	>
 
@@ -42,25 +42,58 @@
 		android:layout_height="0dp"
 		/>
 		
-	<LinearLayout 
+	<RadioGroup 
 		android:id="@+id/agreeDisagreeButtons"
 		android:layout_width="fill_parent"
 		android:layout_weight="1" 
-		android:layout_height="0dp"
+		android:layout_height="0dp" 
+		android:orientation="horizontal"
 		>
-		<ImageButton 
-			android:id="@+id/buttonAgree"
-			android:src="@drawable/agree"
+		
+		<!--The RadioButton drawable is hardcoded to be on the left,
+		the only way to make a radiobutton be a centered image is to use the background (and not drawableTop) -->
+		<RadioButton 
+			android:id="@+id/buttonAgree" 
 			android:layout_height="fill_parent" 
 			android:layout_weight="1" 
 			android:layout_width="0dp"
-			></ImageButton>
-		<ImageButton 
-			android:id="@+id/buttonDisagree"
-			android:src="@drawable/disagree"
+			android:checked="false"
+			android:text=""
+			android:button="@null"
+			android:gravity="center"
+			android:background="@drawable/radio_disagree"
+			></RadioButton>
+		<RadioButton 
+			android:id="@+id/buttonDisagree" 
 			android:layout_height="fill_parent"
 			android:layout_weight="1" 
 			android:layout_width="0dp"
-			></ImageButton>
-	</LinearLayout>
+			android:checked="false"
+			android:text=""
+			android:button="@null"
+			android:gravity="center"			
+			android:background="@drawable/radio_agree"
+			></RadioButton>
+	</RadioGroup>
+		
+<!-- 	<LinearLayout  -->
+<!-- 		android:layout_width="fill_parent" -->
+<!-- 		android:layout_weight="1"  -->
+<!-- 		android:layout_height="0dp" -->
+<!-- 		> -->
+<!-- 		<ImageButton  -->
+<!-- 			android:id="@+id/buttonAgree" -->
+<!-- 			android:src="@drawable/agree" -->
+<!-- 			android:layout_height="fill_parent"  -->
+<!-- 			android:layout_weight="1"  -->
+<!-- 			android:layout_width="0dp" -->
+<!-- 			></ImageButton> -->
+<!-- 		<ImageButton  -->
+<!-- 			android:id="@+id/buttonDisagree" -->
+<!-- 			android:src="@drawable/disagree" -->
+<!-- 			android:layout_height="fill_parent" -->
+<!-- 			android:layout_weight="1"  -->
+<!-- 			android:layout_width="0dp" -->
+<!-- 			></ImageButton> -->
+<!-- 	</LinearLayout> -->
 </LinearLayout>

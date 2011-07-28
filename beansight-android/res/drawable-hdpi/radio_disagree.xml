@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- see http://developer.android.com/guide/topics/resources/drawable-resource.html#Bitmap -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_checked="true" android:state_pressed="true">
+		<bitmap android:src="@drawable/disagree_checked_pressed" android:gravity="center"></bitmap>
+	</item>
+	<item android:state_checked="false" android:state_pressed="true">
+		<bitmap android:src="@drawable/disagree_notchecked_pressed" android:gravity="center"></bitmap>
+	</item>
+	<item android:state_checked="true" android:state_focused="true">
+		<bitmap android:src="@drawable/disagree_checked_focused" android:gravity="center"></bitmap>
+	</item>
+	<item android:state_checked="false" android:state_focused="true">
+		<bitmap android:src="@drawable/disagree_notchecked_focused" android:gravity="center"></bitmap>
+	</item>
+	<item android:state_checked="true">
+		<bitmap android:src="@drawable/disagree_checked" android:gravity="center"></bitmap>
+	</item>
+	<item android:state_checked="false">
+		<bitmap android:src="@drawable/disagree_notchecked" android:gravity="center"></bitmap>
+	</item>
+</selector>
