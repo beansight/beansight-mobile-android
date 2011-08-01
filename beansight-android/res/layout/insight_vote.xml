@@ -53,7 +53,7 @@
 		<!--The RadioButton drawable is hardcoded to be on the left,
 		the only way to make a radiobutton be a centered image is to use the background (and not drawableTop) -->
 		<RadioButton 
-			android:id="@+id/buttonAgree" 
+			android:id="@+id/buttonDisagree" 
 			android:layout_height="fill_parent" 
 			android:layout_weight="1" 
 			android:layout_width="0dp"
@@ -64,7 +64,7 @@
 			android:background="@drawable/radio_disagree"
 			></RadioButton>
 		<RadioButton 
-			android:id="@+id/buttonDisagree" 
+			android:id="@+id/buttonAgree" 
 			android:layout_height="fill_parent"
 			android:layout_weight="1" 
 			android:layout_width="0dp"

@@ -16,9 +16,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.beansight.android.api.BeansightApi;
@@ -43,6 +43,7 @@ public class HomeActivity extends Activity {
 	
 	private RadioButton radioAgree;
 	private RadioButton radioDisagree;
+	private RadioGroup radioGroup;
 	
 	/** is the system waiting for new insights to come ? */
 	private boolean fetchingNewInsights = false;
@@ -66,6 +67,8 @@ public class HomeActivity extends Activity {
 
 		insightList = new ArrayList<InsightListItem>();
 		fetchNextInsights();
+		
+		radioGroup = (RadioGroup) findViewById(R.id.agreeDisagreeButtons);
 		
 		// attach click listeners to radio buttons
 		radioAgree = (RadioButton) findViewById(R.id.buttonAgree);
@@ -112,27 +115,39 @@ public class HomeActivity extends Activity {
     }
     
     private void vote(VotePosition state) {
-    	new VoteTask().execute(state);
-    	next();
+    	String vote = "agree";
+    	if(state == VotePosition.DISAGREE) {
+    		vote = "disagree";
+    	}
+		insightList.get(currentInsightIndex).setLastCurrentUserVote(vote);
+
+		new VoteTask().execute(state);
+
+		next();
     }
     
     private void next() {
-    	resetVoteState();
-    	if(currentInsightIndex + 1 < insightList.size()) {
-    		pager.setCurrentItem(currentInsightIndex + 1);
-    	}
+    	changePage(currentInsightIndex + 1);
     }
     
     private void previous() {
-    	resetVoteState();
-    	if(currentInsightIndex > 0) {
-    		pager.setCurrentItem(currentInsightIndex -1);
+    	changePage(currentInsightIndex - 1);
+    }
+    
+    private void changePage(int pageNumber) {
+    	if(pageNumber > 0 && pageNumber < insightList.size()) {
+    		pager.setCurrentItem(pageNumber);
     	}
     }
     
-    private void resetVoteState() {
-    	radioAgree.setChecked(false);
-    	radioDisagree.setChecked(false);
+    private void setButtonsVoteState(int pageNumber) {
+    	radioGroup.clearCheck();
+    	String state = insightList.get(pageNumber).getLastCurrentUserVote();
+    	if(state.equals("agree")) {
+    		radioAgree.setChecked(true);
+    	} else if(state.equals("disagree")) {
+    		radioDisagree.setChecked(true);
+    	}
     }
     
 	// see http://geekyouup.blogspot.com/2011/07/viewpager-example-from-paug.html
@@ -193,6 +208,7 @@ public class HomeActivity extends Activity {
         @Override
         public void onPageSelected(int position) {
         	currentInsightIndex = position;
+        	setButtonsVoteState(position);
         }
 	}
 

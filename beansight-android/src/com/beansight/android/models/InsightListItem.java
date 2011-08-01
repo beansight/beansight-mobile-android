@@ -77,6 +77,7 @@ public class InsightListItem {
 	public void setLastCurrentUserVote(String lastCurrentUserVote) {
 		this.lastCurrentUserVote = lastCurrentUserVote;
 	}
+	
 	/** Return the date + content */
 	public String getInsightText() {
 		return "On " + getEndDate().toLocaleString() + ", " + getContent(); 
