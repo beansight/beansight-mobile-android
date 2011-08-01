@@ -31,19 +31,19 @@ public class HomeActivity extends Activity {
 
 	private Context cxt;
 	private ViewPager pager;
+	private RadioButton radioAgree;
+	private RadioButton radioDisagree;
+	private RadioGroup radioGroup;
 	
-	/** store the list of downloaded insights */
-	private List<InsightListItem> insightList;
 	/** the number of insight to ask at every list calls */
 	private static final int INSIGHT_NUMBER = 10;
 	/** starts downloading new insight when we are INSIGHT_NUMBER_START_DOWNLOAD insights far from the end of the list */
 	private static final int INSIGHT_NUMBER_START_DOWNLOAD = 5;
+
+	/** store the list of downloaded insights */
+	private List<InsightListItem> insightList;
 	/** iterator pointing to the currently displayed insight */
 	private int currentInsightIndex = 0;
-	
-	private RadioButton radioAgree;
-	private RadioButton radioDisagree;
-	private RadioGroup radioGroup;
 	
 	/** is the system waiting for new insights to come ? */
 	private boolean fetchingNewInsights = false;
@@ -59,15 +59,11 @@ public class HomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.insight_vote);
-        
-        cxt = this;
-        
+
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
 		accessToken = prefs.getString("access_token", null);
-
-		insightList = new ArrayList<InsightListItem>();
-		fetchNextInsights();
 		
+	    cxt = this;
 		radioGroup = (RadioGroup) findViewById(R.id.agreeDisagreeButtons);
 		
 		// attach click listeners to radio buttons
@@ -95,6 +91,24 @@ public class HomeActivity extends Activity {
 		        next();
 		    }
 		});
+		
+		// get the last state (for example if the activity has been restarted because of an orientation change)
+		final ActivityData data = (ActivityData) getLastNonConfigurationInstance();
+	    if (data == null) { // if no pre-saved data
+	    	insightList = new ArrayList<InsightListItem>();
+			fetchNextInsights();
+	    } else { // id pre-saved data, load them
+	    	insightList = data.insightList;
+	    	currentInsightIndex = data.currentInsightIndex;
+	    	createPager();
+	    }
+    }
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+    	// save the currently loaded insights before activity is destroy
+        final ActivityData data = generateActivityData();
+        return data;
     }
     
     private void openConnectScreen() {
@@ -247,10 +261,7 @@ public class HomeActivity extends Activity {
 			}
 			
 			if(createPager) {
-	    		InsightListPagerAdapter pagerAdapter = new InsightListPagerAdapter();
-	            pager = (ViewPager) findViewById(R.id.insightPager);
-	            pager.setAdapter(pagerAdapter);
-	            pager.setOnPageChangeListener(new MyPageChangeListener());
+				createPager();
 			}
 			
 			fetchingNewInsights = false;
@@ -277,4 +288,23 @@ public class HomeActivity extends Activity {
 		}
 	}
 	
+	private class ActivityData {
+		public List<InsightListItem> insightList;
+		public int currentInsightIndex;
+	}
+	
+	/** get the data to save before the activity is restarted */
+	private ActivityData generateActivityData() {
+		ActivityData data = new ActivityData();
+		data.insightList = insightList;
+		data.currentInsightIndex = currentInsightIndex;
+		return data;
+	}
+	
+	private void createPager() {
+		InsightListPagerAdapter pagerAdapter = new InsightListPagerAdapter();
+        pager = (ViewPager) findViewById(R.id.insightPager);
+        pager.setAdapter(pagerAdapter);
+        pager.setOnPageChangeListener(new MyPageChangeListener());
+	}
 }
