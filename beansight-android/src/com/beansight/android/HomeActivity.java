@@ -8,12 +8,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -92,15 +96,18 @@ public class HomeActivity extends Activity {
 		    }
 		});
 		
+        pager = (ViewPager) findViewById(R.id.insightPager);
+        pager.setAdapter(new InsightListPagerAdapter());
+        pager.setOnPageChangeListener(new MyPageChangeListener());
+		
 		// get the last state (for example if the activity has been restarted because of an orientation change)
 		final ActivityData data = (ActivityData) getLastNonConfigurationInstance();
 	    if (data == null) { // if no pre-saved data
 	    	insightList = new ArrayList<InsightListItem>();
 			fetchNextInsights();
-	    } else { // id pre-saved data, load them
+	    } else { // if pre-saved data, load them
 	    	insightList = data.insightList;
 	    	currentInsightIndex = data.currentInsightIndex;
-	    	createPager();
 	    }
     }
     
@@ -111,7 +118,38 @@ public class HomeActivity extends Activity {
         return data;
     }
     
-    private void openConnectScreen() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.insight_vote_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.menu_logout:
+            logout();
+            return true;
+        default:
+        	return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    private void logout() {
+    	SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
+        Editor editor = prefs.edit();
+        editor.putString("access_token", null);
+        editor.commit();
+        
+        // reload:
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+	}
+
+	private void openConnectScreen() {
     	startActivity( new Intent(this, WebViewActivity.class) );
     }
     
@@ -249,10 +287,9 @@ public class HomeActivity extends Activity {
 	    		return;
 	    	}
 	    	
-	    	//TODO : this is temporary, we should display a waiting screen (fragment?) 
-	    	boolean createPager = false;
-	    	if( insightList.isEmpty() ) {
-	    		createPager = true;
+	    	boolean refreshPager = false;
+	    	if(insightList.isEmpty()) {
+	    		refreshPager = true;
 	    	}
 	    	
 	        // populate the insight list
@@ -260,8 +297,8 @@ public class HomeActivity extends Activity {
 				insightList.addAll(response.getResponse());
 			}
 			
-			if(createPager) {
-				createPager();
+			if(refreshPager) {
+				pager.getAdapter().notifyDataSetChanged();
 			}
 			
 			fetchingNewInsights = false;
@@ -301,10 +338,4 @@ public class HomeActivity extends Activity {
 		return data;
 	}
 	
-	private void createPager() {
-		InsightListPagerAdapter pagerAdapter = new InsightListPagerAdapter();
-        pager = (ViewPager) findViewById(R.id.insightPager);
-        pager.setAdapter(pagerAdapter);
-        pager.setOnPageChangeListener(new MyPageChangeListener());
-	}
 }

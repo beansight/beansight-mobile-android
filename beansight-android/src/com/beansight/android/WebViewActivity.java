@@ -33,7 +33,6 @@ public class WebViewActivity extends Activity {
         			
                     Log.v("WebViewActivity", "OAuth complete, token: [" + accessToken + "].");
                 	
-                    Toast.makeText(WebViewActivity.this, "Token: " + accessToken, Toast.LENGTH_SHORT).show();
                     SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
                     Editor editor = prefs.edit();
                     editor.putString("access_token", accessToken);
