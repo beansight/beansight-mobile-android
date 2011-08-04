@@ -310,17 +310,17 @@ public class HomeActivity extends Activity {
 		@Override
 		protected InsightVoteResponse doInBackground(VotePosition... state) {
 	    	InsightVoteResponse insightVoteResponse = null;
-//			try {
-//				if(state[0] == VotePosition.AGREE) {
-//					insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
-//				} else if(state[0] == VotePosition.DISAGREE) {
-//					insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
-//				}
-//			} catch (NotAuthenticatedException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			try {
+				if(state[0] == VotePosition.AGREE) {
+					insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
+				} else if(state[0] == VotePosition.DISAGREE) {
+					insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
+				}
+			} catch (NotAuthenticatedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return insightVoteResponse;
 		}
 	}
