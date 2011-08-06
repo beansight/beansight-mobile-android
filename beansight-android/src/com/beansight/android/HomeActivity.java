@@ -84,18 +84,6 @@ public class HomeActivity extends Activity {
 			}
 		});
 		
-		// attach the listeners to the previous and next buttons
-		((ImageButton) findViewById(R.id.buttonPrevious)).setOnClickListener( new OnClickListener() {
-		    public void onClick(View v) {
-		        previous();
-		    }
-		});
-		((ImageButton) findViewById(R.id.buttonNext)).setOnClickListener( new OnClickListener() {
-		    public void onClick(View v) {
-		        next();
-		    }
-		});
-		
         pager = (ViewPager) findViewById(R.id.insightPager);
         pager.setAdapter(new InsightListPagerAdapter());
         pager.setOnPageChangeListener(new MyPageChangeListener());

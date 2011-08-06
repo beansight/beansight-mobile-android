@@ -5,36 +5,6 @@
 	android:orientation="vertical"
 	>
 
-	<LinearLayout 
-		android:layout_width="fill_parent"
-		android:layout_weight="0.4" 
-		android:layout_height="0dp"
-		android:gravity="center"
-		>
-		<ImageButton 
-			style="@style/prevnextButtons"
-			android:id="@+id/buttonPrevious"
-	        android:layout_height="wrap_content"
-	        android:layout_width="wrap_content" 
-			android:src="@drawable/button_previous"
-	        ></ImageButton>
-		<TextView 
-			android:id="@+id/title" 
-			android:text="@string/title_prediction"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content" 
-			android:gravity="center"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			></TextView>
-		<ImageButton
-			style="@style/prevnextButtons"
-			android:id="@+id/buttonNext"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:src="@drawable/button_next" 
-			></ImageButton>
-	</LinearLayout>
-	
 	<android.support.v4.view.ViewPager
 		android:id="@+id/insightPager" 
     	android:layout_width="fill_parent" 
