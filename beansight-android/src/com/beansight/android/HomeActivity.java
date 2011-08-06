@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +39,7 @@ public class HomeActivity extends Activity {
 	private RadioButton radioAgree;
 	private RadioButton radioDisagree;
 	private RadioGroup radioGroup;
+	private ProgressDialog loadingInsightsDialog;
 	
 	/** the number of insight to ask at every list calls */
 	private static final int INSIGHT_NUMBER = 10;
@@ -93,10 +95,13 @@ public class HomeActivity extends Activity {
 	    if (data == null) { // if no pre-saved data
 	    	insightList = new ArrayList<InsightListItem>();
 			fetchNextInsights();
+			// show a loading dialog
+			loadingInsightsDialog = ProgressDialog.show(this, "", getResources().getText(R.string.loading_insights), true);
 	    } else { // if pre-saved data, load them
 	    	insightList = data.insightList;
 	    	currentInsightIndex = data.currentInsightIndex;
 	    }
+	    
     }
     
     @Override
@@ -278,6 +283,11 @@ public class HomeActivity extends Activity {
 	    	boolean refreshPager = false;
 	    	if(insightList.isEmpty()) {
 	    		refreshPager = true;
+	    	}
+	    	
+	    	// delete loading dialog, if exists
+	    	if( loadingInsightsDialog != null && loadingInsightsDialog.isShowing()) {
+	    		loadingInsightsDialog.dismiss();
 	    	}
 	    	
 	        // populate the insight list
