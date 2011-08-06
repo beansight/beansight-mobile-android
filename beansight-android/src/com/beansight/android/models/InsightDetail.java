@@ -6,6 +6,7 @@ public class InsightDetail {
 	private String content;
 	private Long creationDate;
 	private Long endDate;
+	private String endDateLabel;
 	private String creator;
 	private Long category;
 	private Long agreeCount;
@@ -43,6 +44,14 @@ public class InsightDetail {
 
 	public void setEndDate(Long endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getEndDateLabel() {
+		return endDateLabel;
+	}
+
+	public void setEndDateLabel(String endDateLabel) {
+		this.endDateLabel = endDateLabel;
 	}
 
 	public String getCreator() {

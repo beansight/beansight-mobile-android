@@ -10,6 +10,7 @@ public class InsightListItem {
 	// these dates should be Date objects, but it's hard to deserialize from long with Gson
 	private long creationDate;
 	private long endDate;
+	private String endDateLabel;
 	private String creator;	
 	private int category;
 	private int agreeCount;
@@ -40,6 +41,12 @@ public class InsightListItem {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate.getTime();
+	}
+	public String getEndDateLabel() {
+		return endDateLabel;
+	}
+	public void setEndDateLabel(String endDateLabel) {
+		this.endDateLabel = endDateLabel;
 	}
 	public String getCreator() {
 		return creator;
@@ -80,7 +87,7 @@ public class InsightListItem {
 	
 	/** Return the date + content */
 	public String getInsightText() {
-		return "On " + getEndDate().toLocaleString() + ", " + getContent(); 
+		return "" + getEndDateLabel() + ", " + getContent(); 
 	}
 	
 }
