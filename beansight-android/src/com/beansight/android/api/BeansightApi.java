@@ -42,7 +42,7 @@ public class BeansightApi {
 	
 	public static InsightListResponse list(String accessToken, Integer from,
 			Integer number, String sort, Integer category,
-			String vote, String topic, Boolean closed, Boolean created) throws IOException {
+			String vote, String topic, Boolean closed, String language) throws IOException {
 		
 		HttpRequestBuilder httpRequestbuilder = generateRequest("insights/list", accessToken);
 		if(from!=null) {
@@ -66,8 +66,8 @@ public class BeansightApi {
 		if(closed!=null) {
 			httpRequestbuilder.data("closed", closed.toString());
 		}
-		if(created!=null) {
-			httpRequestbuilder.data("created", created.toString());
+		if( language != null ) {
+			httpRequestbuilder.data("language", language.toString());			
 		}
 		
 		InsightListResponse insightListResponse = null;

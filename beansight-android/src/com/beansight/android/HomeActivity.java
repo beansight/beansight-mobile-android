@@ -283,7 +283,7 @@ public class HomeActivity extends Activity {
 	    protected InsightListResponse doInBackground(Integer... from) {
 			InsightListResponse insightListItemResponse = null;
 			try {
-				insightListItemResponse = BeansightApi.list(accessToken, from[0], INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, false);
+				insightListItemResponse = BeansightApi.list(accessToken, from[0], INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, "user");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
