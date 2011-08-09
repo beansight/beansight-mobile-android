@@ -43,7 +43,6 @@ public class HomeActivity extends Activity {
 	private RadioButton radioDisagree;
 	private RadioGroup radioGroup;
 	private ProgressDialog loadingInsightsDialog;
-	private ProgressDialog loadingUserProfileDialog;
 	
 	// Finals
 	/** the number of insight to ask at every list calls */
@@ -60,8 +59,6 @@ public class HomeActivity extends Activity {
 	private String accessToken;
 	/** current user */
 	private String userName;
-	private String writtingLanguage;
-	private String secondWrittingLanguage;
 
 	// State
 	/** is the system waiting for new insights to come ? */
@@ -81,8 +78,6 @@ public class HomeActivity extends Activity {
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
 		accessToken = prefs.getString("access_token", null);
 		userName 	= prefs.getString("userName", null);
-		writtingLanguage 		= prefs.getString("writtingLanguage", null);
-		secondWrittingLanguage 	= prefs.getString("secondWrittingLanguage", null);
 		
     	insightList = new ArrayList<InsightListItem>();
 		
@@ -114,14 +109,13 @@ public class HomeActivity extends Activity {
 	    	currentInsightIndex = data.currentInsightIndex;
 	    }
         
-        // if no user info, fetch them
-        if (userName == null || writtingLanguage == null) {
-			// show a loading dialog
-        	loadingUserProfileDialog = ProgressDialog.show(this, "", getResources().getText(R.string.loading_userprofile), true);
-        	new CurrentUserTask().execute();
-        } else {        
-        	populateInsights();
-        }
+    	// show a loading dialog
+	    String alertTitle = "";
+	    if(userName != null) {
+	    	alertTitle = userName;
+	    }
+    	loadingInsightsDialog = ProgressDialog.show(this, alertTitle, getResources().getText(R.string.loading_insights), true);
+		fetchNextInsights();
     }
     
     @Override
@@ -155,8 +149,6 @@ public class HomeActivity extends Activity {
         Editor editor = prefs.edit();
         editor.putString("access_token", 			null);
         editor.putString("userName", 				null);
-        editor.putString("writtingLanguage", 		null);
-        editor.putString("secondWrittingLanguage", 	null);
         editor.putString("avatarSmall", 			null);
         editor.putString("avatarMedium", 			null);
         editor.putString("avatarLarge", 			null);
@@ -177,13 +169,6 @@ public class HomeActivity extends Activity {
     	new ListTask().execute(insightList.size());
     }
     
-    /** load the insights into the view, make a call if necessary */
-    private void populateInsights() {
-    	// show a loading dialog
-    	loadingInsightsDialog = ProgressDialog.show(this, userName, getResources().getText(R.string.loading_insights), true);
-		fetchNextInsights();
-    }
-
     private void agree() {
     	vote(VotePosition.AGREE);
     }
@@ -332,6 +317,14 @@ public class HomeActivity extends Activity {
 				pager.getAdapter().notifyDataSetChanged();
 			}
 			
+			if(userName == null) {
+				userName = response.getMeta().getUserName();
+				SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
+	            Editor editor = prefs.edit();
+	            editor.putString("userName", response.getMeta().getUserName());
+	            editor.commit();
+			}
+			
 			fetchingNewInsights = false;
 	    }
 	}
@@ -372,25 +365,12 @@ public class HomeActivity extends Activity {
 		}
 		
 	    protected void onPostExecute(UserProfileResponse response) {
-	    	if(loadingUserProfileDialog != null && loadingUserProfileDialog.isShowing()) {
-	    		loadingUserProfileDialog.dismiss();
-	    	}
-
-	    	userName = response.getResponse().getUserName();
-	    	writtingLanguage = response.getResponse().getWrittingLanguage();
-	    	secondWrittingLanguage =response.getResponse().getSecondWrittingLanguage();
-	    	
             SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
             Editor editor = prefs.edit();
-            editor.putString("userName", 				response.getResponse().getUserName());
-            editor.putString("writtingLanguage", 		response.getResponse().getWrittingLanguage());
-            editor.putString("secondWrittingLanguage", 	response.getResponse().getSecondWrittingLanguage());
             editor.putString("avatarSmall", 			response.getResponse().getAvatarSmall());
             editor.putString("avatarMedium", 			response.getResponse().getAvatarMedium());
             editor.putString("avatarLarge", 			response.getResponse().getAvatarLarge());
             editor.commit();
-	    	
-	    	populateInsights();
 	    }
 	}
 	
