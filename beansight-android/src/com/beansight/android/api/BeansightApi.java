@@ -11,6 +11,7 @@ import android.util.Log;
 import com.beansight.android.api.responses.InsightDetailResponse;
 import com.beansight.android.api.responses.InsightListResponse;
 import com.beansight.android.api.responses.InsightVoteResponse;
+import com.beansight.android.api.responses.UserProfileResponse;
 import com.beansight.android.http.Http;
 import com.beansight.android.http.Http.HttpRequestBuilder;
 import com.google.gson.Gson;
@@ -19,7 +20,7 @@ import com.google.gson.GsonBuilder;
 public class BeansightApi {
 
 	final private static HttpClient client = new DefaultHttpClient(); 
-	private static String domain = "http://92.243.10.157"; //"http://www.beansight.com";
+	private static String domain = "http://www.beansight.com"; // 92.243.10.157
 	
 	private static HttpRequestBuilder generateRequest(String apiAction, String accessToken) {
 		String url = String.format("%s/api/" + apiAction, domain);
@@ -90,8 +91,7 @@ public class BeansightApi {
 		String result = generateRequest("insights/agree", accessToken)
 			.data("id", id)
 			.asString();
-		Gson gson = new Gson();
-		insightVoteResponse = gson.fromJson(result, InsightVoteResponse.class);
+		insightVoteResponse = new Gson().fromJson(result, InsightVoteResponse.class);
 		return insightVoteResponse;
 	}
 	
@@ -100,9 +100,14 @@ public class BeansightApi {
 		String result = generateRequest("insights/disagree", accessToken)
 			.data("id", id)
 			.asString();
-		Gson gson = new Gson();
-		insightVoteResponse = gson.fromJson(result, InsightVoteResponse.class);
+		insightVoteResponse = new Gson().fromJson(result, InsightVoteResponse.class);
 		return insightVoteResponse;
 	}
 	
+	public static UserProfileResponse me(String accessToken) throws IOException, NotAuthenticatedException {
+		UserProfileResponse response = null;
+		String result = generateRequest("users/me", accessToken).asString();
+		response = new Gson().fromJson(result, UserProfileResponse.class);
+		return response;
+	}
 }

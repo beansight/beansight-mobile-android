@@ -6,4 +6,5 @@
     <string name="title_prediction">Prediction</string>
     <string name="menu_logout">Logout</string>
     <string name="loading_insights">Loading predictions...</string>
+    <string name="loading_userprofile">Loading user settings...</string>
 </resources>

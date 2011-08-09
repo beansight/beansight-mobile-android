@@ -30,31 +30,43 @@ import com.beansight.android.api.BeansightApi;
 import com.beansight.android.api.NotAuthenticatedException;
 import com.beansight.android.api.responses.InsightListResponse;
 import com.beansight.android.api.responses.InsightVoteResponse;
+import com.beansight.android.api.responses.UserProfileResponse;
 import com.beansight.android.models.InsightListItem;
+import com.beansight.android.models.UserProfile;
 
 public class HomeActivity extends Activity {
 
+	// Views
 	private Context cxt;
 	private ViewPager pager;
 	private RadioButton radioAgree;
 	private RadioButton radioDisagree;
 	private RadioGroup radioGroup;
 	private ProgressDialog loadingInsightsDialog;
+	private ProgressDialog loadingUserProfileDialog;
 	
+	// Finals
 	/** the number of insight to ask at every list calls */
 	private static final int INSIGHT_NUMBER = 10;
 	/** starts downloading new insight when we are INSIGHT_NUMBER_START_DOWNLOAD insights far from the end of the list */
 	private static final int INSIGHT_NUMBER_START_DOWNLOAD = 5;
 
+	// Data
 	/** store the list of downloaded insights */
 	private List<InsightListItem> insightList;
 	/** iterator pointing to the currently displayed insight */
 	private int currentInsightIndex = 0;
-	
+	/** access token */
+	private String accessToken;
+	/** current user */
+	private String userName;
+	private String writtingLanguage;
+	private String secondWrittingLanguage;
+
+	// State
 	/** is the system waiting for new insights to come ? */
 	private boolean fetchingNewInsights = false;
 	
-	private String accessToken;
 
 	public enum VotePosition {
 		AGREE, DISAGREE
@@ -68,6 +80,11 @@ public class HomeActivity extends Activity {
 
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
 		accessToken = prefs.getString("access_token", null);
+		userName 	= prefs.getString("userName", null);
+		writtingLanguage 		= prefs.getString("writtingLanguage", null);
+		secondWrittingLanguage 	= prefs.getString("secondWrittingLanguage", null);
+		
+    	insightList = new ArrayList<InsightListItem>();
 		
 	    cxt = this;
 		radioGroup = (RadioGroup) findViewById(R.id.agreeDisagreeButtons);
@@ -89,19 +106,22 @@ public class HomeActivity extends Activity {
         pager = (ViewPager) findViewById(R.id.insightPager);
         pager.setAdapter(new InsightListPagerAdapter());
         pager.setOnPageChangeListener(new MyPageChangeListener());
-		
+
 		// get the last state (for example if the activity has been restarted because of an orientation change)
 		final ActivityData data = (ActivityData) getLastNonConfigurationInstance();
-	    if (data == null) { // if no pre-saved data
-	    	insightList = new ArrayList<InsightListItem>();
-			fetchNextInsights();
-			// show a loading dialog
-			loadingInsightsDialog = ProgressDialog.show(this, "", getResources().getText(R.string.loading_insights), true);
-	    } else { // if pre-saved data, load them
+	    if (data != null) { 
 	    	insightList = data.insightList;
 	    	currentInsightIndex = data.currentInsightIndex;
 	    }
-	    
+        
+        // if no user info, fetch them
+        if (userName == null || writtingLanguage == null) {
+			// show a loading dialog
+        	loadingUserProfileDialog = ProgressDialog.show(this, "", getResources().getText(R.string.loading_userprofile), true);
+        	new CurrentUserTask().execute();
+        } else {        
+        	populateInsights();
+        }
     }
     
     @Override
@@ -133,7 +153,13 @@ public class HomeActivity extends Activity {
     private void logout() {
     	SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
         Editor editor = prefs.edit();
-        editor.putString("access_token", null);
+        editor.putString("access_token", 			null);
+        editor.putString("userName", 				null);
+        editor.putString("writtingLanguage", 		null);
+        editor.putString("secondWrittingLanguage", 	null);
+        editor.putString("avatarSmall", 			null);
+        editor.putString("avatarMedium", 			null);
+        editor.putString("avatarLarge", 			null);
         editor.commit();
         
         // reload:
@@ -149,6 +175,13 @@ public class HomeActivity extends Activity {
     private void fetchNextInsights() {
     	fetchingNewInsights = true;
     	new ListTask().execute(insightList.size());
+    }
+    
+    /** load the insights into the view, make a call if necessary */
+    private void populateInsights() {
+    	// show a loading dialog
+    	loadingInsightsDialog = ProgressDialog.show(this, userName, getResources().getText(R.string.loading_insights), true);
+		fetchNextInsights();
     }
 
     private void agree() {
@@ -321,6 +354,44 @@ public class HomeActivity extends Activity {
 			}
 			return insightVoteResponse;
 		}
+	}
+
+	/** Create a thread asking for the current user's info. */
+	private class CurrentUserTask extends AsyncTask<Void, Void, UserProfileResponse> {
+		@Override
+		protected UserProfileResponse doInBackground(Void... nothing ) {
+	    	UserProfileResponse userProfileResponse = null;
+			try {
+				userProfileResponse = BeansightApi.me(accessToken);
+			} catch (NotAuthenticatedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return userProfileResponse;
+		}
+		
+	    protected void onPostExecute(UserProfileResponse response) {
+	    	if(loadingUserProfileDialog != null && loadingUserProfileDialog.isShowing()) {
+	    		loadingUserProfileDialog.dismiss();
+	    	}
+
+	    	userName = response.getResponse().getUserName();
+	    	writtingLanguage = response.getResponse().getWrittingLanguage();
+	    	secondWrittingLanguage =response.getResponse().getSecondWrittingLanguage();
+	    	
+            SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
+            Editor editor = prefs.edit();
+            editor.putString("userName", 				response.getResponse().getUserName());
+            editor.putString("writtingLanguage", 		response.getResponse().getWrittingLanguage());
+            editor.putString("secondWrittingLanguage", 	response.getResponse().getSecondWrittingLanguage());
+            editor.putString("avatarSmall", 			response.getResponse().getAvatarSmall());
+            editor.putString("avatarMedium", 			response.getResponse().getAvatarMedium());
+            editor.putString("avatarLarge", 			response.getResponse().getAvatarLarge());
+            editor.commit();
+	    	
+	    	populateInsights();
+	    }
 	}
 	
 	private class ActivityData {
