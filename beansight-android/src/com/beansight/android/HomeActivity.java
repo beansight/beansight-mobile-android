@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -107,15 +108,17 @@ public class HomeActivity extends Activity {
 	    if (data != null) { 
 	    	insightList = data.insightList;
 	    	currentInsightIndex = data.currentInsightIndex;
+	    } else {
+	    	// show a loading dialog
+	    	String alertTitle = "";
+	    	if(userName != null) {
+	    		alertTitle = userName;
+	    	}
+	    	loadingInsightsDialog = ProgressDialog.show(this, alertTitle, getResources().getText(R.string.loading_insights), true);
+	    	// Prevent from changing orientation durong the presence of the dialog box
+	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+	    	fetchNextInsights();
 	    }
-        
-    	// show a loading dialog
-	    String alertTitle = "";
-	    if(userName != null) {
-	    	alertTitle = userName;
-	    }
-    	loadingInsightsDialog = ProgressDialog.show(this, alertTitle, getResources().getText(R.string.loading_insights), true);
-		fetchNextInsights();
     }
     
     @Override
@@ -326,6 +329,9 @@ public class HomeActivity extends Activity {
 			}
 			
 			fetchingNewInsights = false;
+			
+			// set the orientation to normal
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	    }
 	}
 	
