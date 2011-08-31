@@ -45,6 +45,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.beansight.android.api.NotAuthenticatedException;
+import com.beansight.android.api.ServerErrorException;
 
 /**
  * Fluent builder for the {@linkplain HttpClient} to simplify its usage.
@@ -373,8 +374,9 @@ public final class Http {
 		 * @return the response body as a String or {@code null} if
 		 *         no response body exists.
 		 * @throws IOException if an error occurs while execution
+		 * @throws ServerErrorException 
 		 */
-		public String asString() throws IOException, NotAuthenticatedException {
+		public String asString() throws IOException, NotAuthenticatedException, ServerErrorException {
 			final HttpResponse response = asResponse();
 			if (response.getStatusLine().getStatusCode() == 403) {
 				throw new NotAuthenticatedException(response.getStatusLine().toString());
@@ -385,7 +387,14 @@ public final class Http {
 				return null;
 			}
 			
-			return EntityUtils.toString(entity, charset);
+			String result = EntityUtils.toString(entity, charset);
+			
+			// Ugly: if the JSON doesn't contain "response", raise a server error.
+			if(result.indexOf("\"response\"") < 0) {
+				throw new ServerErrorException();
+			}
+			
+			return result;
 		}
 
 		/**

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.beansight.android.api.BeansightApi;
 import com.beansight.android.api.NotAuthenticatedException;
+import com.beansight.android.api.ServerErrorException;
 import com.beansight.android.api.responses.InsightListResponse;
 import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.api.responses.Meta;
@@ -152,6 +153,10 @@ public class HomeActivity extends Activity {
     private void notLoggedError() {
     	Toast.makeText(this, R.string.error_notauthenticated, Toast.LENGTH_LONG).show();
     	logout();
+    }
+    
+    private void serverError() {
+    	Toast.makeText(this, R.string.server_error, Toast.LENGTH_LONG).show();
     }
     
     private void logout() {
@@ -297,12 +302,19 @@ public class HomeActivity extends Activity {
 				insightListItemResponse = BeansightApi.list(accessToken, from[0], INSIGHT_NUMBER, "incoming", null, "non-voted", null, null, "user");
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (ServerErrorException e) {
+				e.printStackTrace();
 			}
 
 			return insightListItemResponse;
 	    }
 	    
 	    protected void onPostExecute(InsightListResponse response) {
+	    	// there was a problem with the API, display a message
+	    	if(response == null ) {
+	    		serverError();
+	    		return;
+	    	}
 	    	// if not authenticated, load the WebView Activity
 	    	if (response != null && !response.getMeta().isAuthenticated()) {
 	    		openConnectScreen();
@@ -380,11 +392,19 @@ public class HomeActivity extends Activity {
 				insightVoteResponse.setMeta(meta);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (ServerErrorException e) {
+				e.printStackTrace();
 			}
 			return insightVoteResponse;
 		}
 		
 	    protected void onPostExecute(InsightVoteResponse response) {
+	    	// there was a problem with the API, display a message
+	    	if(response == null ) {
+	    		serverError();
+	    		return;
+	    	}
+	    	
 	    	if(!response.getMeta().isAuthenticated()) {
 	    		notLoggedError();
 	    	}
@@ -402,11 +422,19 @@ public class HomeActivity extends Activity {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (ServerErrorException e) {
+				e.printStackTrace();
 			}
 			return userProfileResponse;
 		}
 		
 	    protected void onPostExecute(UserProfileResponse response) {
+	    	// there was a problem with the API, display a message
+	    	if(response == null ) {
+	    		serverError();
+	    		return;
+	    	}
+	    	
             SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
             Editor editor = prefs.edit();
             editor.putString("avatarSmall", 			response.getResponse().getAvatarSmall());

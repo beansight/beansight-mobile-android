@@ -17,6 +17,7 @@ import com.beansight.android.http.Http;
 import com.beansight.android.http.Http.HttpRequestBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 public class BeansightApi {
 
@@ -28,7 +29,7 @@ public class BeansightApi {
 		return Http.get(url).use(client).data("access_token", accessToken);
 	}
 	
-	public static InsightDetailResponse show(String accessToken, String id) throws NotAuthenticatedException, IOException {
+	public static InsightDetailResponse show(String accessToken, String id) throws NotAuthenticatedException, IOException, ServerErrorException {
 		Log.v("BeansightApi.show", String.format("access_token=%s id=%s" , accessToken, id));
 		
 		InsightDetailResponse insightDetailResponse = null;
@@ -36,14 +37,18 @@ public class BeansightApi {
 			.data("id", id)
 			.asString();
 		Gson gson = new Gson();
-		insightDetailResponse = gson.fromJson(result, InsightDetailResponse.class);
+		try {
+			insightDetailResponse = gson.fromJson(result, InsightDetailResponse.class);
+		} catch (JsonSyntaxException e) {
+			throw new ServerErrorException(e);
+		}
 		
 		return insightDetailResponse;
 	}
 	
 	public static InsightListResponse list(String accessToken, Integer from,
 			Integer number, String sort, Integer category,
-			String vote, String topic, Boolean closed, String language) throws IOException {
+			String vote, String topic, Boolean closed, String language) throws IOException, ServerErrorException {
 		
 		HttpRequestBuilder httpRequestbuilder = generateRequest("insights/list", accessToken);
 		if(from!=null) {
@@ -78,37 +83,40 @@ public class BeansightApi {
 		} catch (NotAuthenticatedException e) {
 			// can't happen : list access isn't a protected resource
 		}
-		Gson gson = new GsonBuilder()
-	     //.setDateFormat(DateFormat.LONG)
-	     .create();
+		Gson gson = new GsonBuilder().create();
 		insightListResponse = gson.fromJson(result, InsightListResponse.class);
 	        
 		return insightListResponse;
 	}
-	
-	
-	public static InsightVoteResponse agree(String accessToken, String id) throws NotAuthenticatedException, IOException {
+		
+	public static InsightVoteResponse agree(String accessToken, String id) throws NotAuthenticatedException, IOException, ServerErrorException {
 		InsightVoteResponse insightVoteResponse = null;
 		String result = generateRequest("insights/agree", accessToken)
 			.data("id", id)
 			.asString();
+		
 		insightVoteResponse = new Gson().fromJson(result, InsightVoteResponse.class);
 		return insightVoteResponse;
 	}
 	
-	public static InsightVoteResponse disagree(String accessToken, String id) throws NotAuthenticatedException, IOException {
+	public static InsightVoteResponse disagree(String accessToken, String id) throws IOException, NotAuthenticatedException, ServerErrorException {
 		InsightVoteResponse insightVoteResponse = null;
 		String result = generateRequest("insights/disagree", accessToken)
 			.data("id", id)
 			.asString();
+		
 		insightVoteResponse = new Gson().fromJson(result, InsightVoteResponse.class);
 		return insightVoteResponse;
 	}
 	
-	public static UserProfileResponse me(String accessToken) throws IOException, NotAuthenticatedException {
+	public static UserProfileResponse me(String accessToken) throws IOException, NotAuthenticatedException, ServerErrorException {
 		UserProfileResponse response = null;
 		String result = generateRequest("users/me", accessToken).asString();
+	
 		response = new Gson().fromJson(result, UserProfileResponse.class);
+		
 		return response;
 	}
+	
+	
 }
