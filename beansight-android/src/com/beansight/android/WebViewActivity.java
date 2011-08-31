@@ -1,6 +1,8 @@
 package com.beansight.android;
 
 
+import com.beansight.android.api.BeansightApi;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,7 +21,7 @@ public class WebViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         
-        String url = "http://www.beansight.com/api/authenticate?";
+        String url = BeansightApi.domain + "/api/authenticate?";
         
         WebView webView = (WebView)findViewById(R.id.webkitWebView);
         webView.getSettings().setJavaScriptEnabled(true);

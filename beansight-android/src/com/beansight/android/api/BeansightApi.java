@@ -7,6 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.beansight.android.api.responses.InsightDetailResponse;
 import com.beansight.android.api.responses.InsightListResponse;
@@ -20,7 +21,7 @@ import com.google.gson.GsonBuilder;
 public class BeansightApi {
 
 	final private static HttpClient client = new DefaultHttpClient(); 
-	private static String domain = "http://www.beansight.com"; // 92.243.10.157
+	public static String domain = "http://92.243.10.157"; // "http://92.243.10.157"; "http://www.beansight.com";
 	
 	private static HttpRequestBuilder generateRequest(String apiAction, String accessToken) {
 		String url = String.format("%s/api/" + apiAction, domain);

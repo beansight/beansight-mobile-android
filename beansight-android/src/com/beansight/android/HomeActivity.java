@@ -26,11 +26,13 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beansight.android.api.BeansightApi;
 import com.beansight.android.api.NotAuthenticatedException;
 import com.beansight.android.api.responses.InsightListResponse;
 import com.beansight.android.api.responses.InsightVoteResponse;
+import com.beansight.android.api.responses.Meta;
 import com.beansight.android.api.responses.UserProfileResponse;
 import com.beansight.android.models.InsightListItem;
 import com.beansight.android.models.UserProfile;
@@ -147,6 +149,11 @@ public class HomeActivity extends Activity {
         }
     }
     
+    private void notLoggedError() {
+    	Toast.makeText(this, R.string.error_notauthenticated, Toast.LENGTH_LONG).show();
+    	logout();
+    }
+    
     private void logout() {
     	SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
         Editor editor = prefs.edit();
@@ -187,7 +194,8 @@ public class HomeActivity extends Activity {
     	}
 		insightList.get(currentInsightIndex).setLastCurrentUserVote(vote);
 
-		new VoteTask().execute(state);
+		VoteTaskParams params = new VoteTaskParams(state, insightList.get(currentInsightIndex).getId());
+		new VoteTask().execute(params);
 
 		next();
     }
@@ -335,24 +343,52 @@ public class HomeActivity extends Activity {
 	    }
 	}
 	
+	private class VoteTaskParams {
+		public VoteTaskParams(VotePosition position, String id) {
+			this.position = position;
+			this.id = id;
+		}
+
+		private VotePosition position;
+		private String id;
+		
+		public VotePosition getPosition() {
+			return position;
+		}
+		public String getId() {
+			return id;
+		}
+	}
+	
 	/** Create a thread and vote the given position on the given insight */
-	private class VoteTask extends AsyncTask<VotePosition, Void, InsightVoteResponse> {
+	private class VoteTask extends AsyncTask<VoteTaskParams, Void, InsightVoteResponse> {
 		@Override
-		protected InsightVoteResponse doInBackground(VotePosition... state) {
+		protected InsightVoteResponse doInBackground(VoteTaskParams... params) {
 	    	InsightVoteResponse insightVoteResponse = null;
 			try {
-				if(state[0] == VotePosition.AGREE) {
-					insightVoteResponse = BeansightApi.agree(accessToken, insightList.get(currentInsightIndex).getId());
-				} else if(state[0] == VotePosition.DISAGREE) {
-					insightVoteResponse = BeansightApi.disagree(accessToken, insightList.get(currentInsightIndex).getId());
+				if(params[0].getPosition() == VotePosition.AGREE) {
+					insightVoteResponse = BeansightApi.agree(accessToken, params[0].getId());
+				} else if(params[0].getPosition() == VotePosition.DISAGREE) {
+					insightVoteResponse = BeansightApi.disagree(accessToken, params[0].getId());
 				}
 			} catch (NotAuthenticatedException e) {
 				e.printStackTrace();
+				// if not authenticated
+				insightVoteResponse = new InsightVoteResponse();
+				Meta meta = new Meta();
+				meta.setAuthenticated(false);
+				insightVoteResponse.setMeta(meta);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return insightVoteResponse;
 		}
+		
+	    protected void onPostExecute(InsightVoteResponse response) {
+	    	if(!response.getMeta().isAuthenticated()) {
+	    		notLoggedError();
+	    	}
+	    }
 	}
 
 	/** Create a thread asking for the current user's info. */
