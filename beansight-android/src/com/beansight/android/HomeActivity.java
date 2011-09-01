@@ -22,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -36,7 +35,6 @@ import com.beansight.android.api.responses.InsightVoteResponse;
 import com.beansight.android.api.responses.Meta;
 import com.beansight.android.api.responses.UserProfileResponse;
 import com.beansight.android.models.InsightListItem;
-import com.beansight.android.models.UserProfile;
 
 public class HomeActivity extends Activity {
 
@@ -78,7 +76,7 @@ public class HomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.insight_vote);
-
+        
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
 		accessToken = prefs.getString("access_token", null);
 		userName 	= prefs.getString("userName", null);
@@ -106,6 +104,12 @@ public class HomeActivity extends Activity {
         pager.setAdapter(new InsightListPagerAdapter());
         pager.setOnPageChangeListener(new MyPageChangeListener());
 
+    	// if no access token, then ask a login
+    	if(accessToken == null) {
+    		openConnectScreen();
+    		return;
+    	}
+        
 		// get the last state (for example if the activity has been restarted because of an orientation change)
 		final ActivityData data = (ActivityData) getLastNonConfigurationInstance();
 	    if (data != null) { 
@@ -123,6 +127,16 @@ public class HomeActivity extends Activity {
 	    	fetchNextInsights();
 	    }
     }
+    
+    /** Called when the activity comes to foreground */
+    @Override
+	public void onRestart() {
+    	super.onRestart();
+    	// if no access token, then ask a login
+    	if(accessToken == null) {
+    		openConnectScreen();
+    	}
+	}
     
     @Override
     public Object onRetainNonConfigurationInstance() {
@@ -326,10 +340,14 @@ public class HomeActivity extends Activity {
 	    		refreshPager = true;
 	    	}
 	    	
+	    	fetchingNewInsights = false;
+
 	    	// delete loading dialog, if exists
 	    	if( loadingInsightsDialog != null && loadingInsightsDialog.isShowing()) {
 	    		loadingInsightsDialog.dismiss();
 	    	}
+	    	// set the orientation to normal
+	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	    	
 	        // populate the insight list
 			if (response != null) {
@@ -348,10 +366,6 @@ public class HomeActivity extends Activity {
 	            editor.commit();
 			}
 			
-			fetchingNewInsights = false;
-			
-			// set the orientation to normal
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	    }
 	}
 	

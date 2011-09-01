@@ -29,8 +29,6 @@ public class WebViewActivity extends Activity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                Log.v("WebViewActivity", "url: [" + url + "].");
-            	
                 int start = url.indexOf(FRAGMENT);
                 if (start > -1) {
                     // You can use the accessToken for api calls now.
