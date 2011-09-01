@@ -21,11 +21,12 @@ import com.google.gson.JsonSyntaxException;
 
 public class BeansightApi {
 
+	public static final String DOMAIN = "http://www.beansight.com"; // "http://92.243.10.157"; "http://www.beansight.com";
+
 	final private static HttpClient client = new DefaultHttpClient(); 
-	public static String domain = "http://92.243.10.157"; // "http://92.243.10.157"; "http://www.beansight.com";
 	
 	private static HttpRequestBuilder generateRequest(String apiAction, String accessToken) {
-		String url = String.format("%s/api/" + apiAction, domain);
+		String url = String.format("%s/api/" + apiAction, DOMAIN);
 		return Http.get(url).use(client).data("access_token", accessToken);
 	}
 	
