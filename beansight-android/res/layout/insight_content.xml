@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- doesn't seem to like android:layout_margin -->
 <TextView
   xmlns:android="http://schemas.android.com/apk/res/android"
 
@@ -6,6 +8,9 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:gravity="center"
-		android:textAppearance="?android:attr/textAppearanceLarge" 
+  android:textAppearance="?android:attr/textAppearanceLarge"
+  android:background="@drawable/background"
+  android:paddingLeft="15dip"
+  android:paddingRight="15dip"
   >
 </TextView>

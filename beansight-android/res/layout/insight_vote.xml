@@ -25,13 +25,17 @@
 		<RadioButton 
 			android:id="@+id/buttonDisagree" 
 			android:layout_height="fill_parent" 
-			android:layout_weight="1" 
 			android:layout_width="0dp"
+			android:layout_weight="1" 
 			android:checked="false"
 			android:text=""
 			android:button="@null"
 			android:gravity="center"
-			android:background="@drawable/radio_disagree"
+			android:background="@drawable/radio_disagree_background"
+			android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"			
 			></RadioButton>
 		<RadioButton 
 			android:id="@+id/buttonAgree" 
@@ -41,8 +45,11 @@
 			android:checked="false"
 			android:text=""
 			android:button="@null"
-			android:gravity="center"			
-			android:background="@drawable/radio_agree"
+			android:gravity="center"
+			android:background="@drawable/radio_agree_background"
+			android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp"
+			android:layout_marginRight="10dp"	
 			></RadioButton>
 	</RadioGroup>
 		
@@ -53,14 +60,14 @@
 <!-- 		> -->
 <!-- 		<ImageButton  -->
 <!-- 			android:id="@+id/buttonAgree" -->
-<!-- 			android:src="@drawable/agree" -->
+<!-- 			android:src="@drawable/radio_disagree" -->
 <!-- 			android:layout_height="fill_parent"  -->
 <!-- 			android:layout_weight="1"  -->
 <!-- 			android:layout_width="0dp" -->
 <!-- 			></ImageButton> -->
 <!-- 		<ImageButton  -->
 <!-- 			android:id="@+id/buttonDisagree" -->
-<!-- 			android:src="@drawable/disagree" -->
+<!-- 			android:src="@drawable/radio_agree" -->
 <!-- 			android:layout_height="fill_parent" -->
 <!-- 			android:layout_weight="1"  -->
 <!-- 			android:layout_width="0dp" -->
