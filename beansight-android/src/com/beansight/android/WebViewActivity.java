@@ -43,6 +43,7 @@ public class WebViewActivity extends Activity {
                     
                     Intent homeActivity = new Intent(WebViewActivity.this, HomeActivity.class);
                     startActivity(homeActivity);
+                    finish();
                 }
             }
             

@@ -191,6 +191,7 @@ public class HomeActivity extends Activity {
 
 	private void openConnectScreen() {
     	startActivity( new Intent(this, WebViewActivity.class) );
+        finish();
     }
     
     private void fetchNextInsights() {
