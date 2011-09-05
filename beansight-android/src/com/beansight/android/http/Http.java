@@ -44,6 +44,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import android.util.Log;
+
 import com.beansight.android.api.NotAuthenticatedException;
 import com.beansight.android.api.ServerErrorException;
 
@@ -391,6 +393,7 @@ public final class Http {
 			
 			// Ugly: if the JSON doesn't contain "response", raise a server error.
 			if(result.indexOf("\"response\"") < 0) {
+	    		Log.e("Beansight", "Server Error: " + result);
 				throw new ServerErrorException();
 			}
 			

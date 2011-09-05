@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -327,6 +328,7 @@ public class HomeActivity extends Activity {
 	    protected void onPostExecute(InsightListResponse response) {
 	    	// there was a problem with the API, display a message
 	    	if(response == null ) {
+	    		Log.e("Beansight", "ListTask server error");
 	    		serverError();
 	    		return;
 	    	}
@@ -416,6 +418,7 @@ public class HomeActivity extends Activity {
 	    protected void onPostExecute(InsightVoteResponse response) {
 	    	// there was a problem with the API, display a message
 	    	if(response == null ) {
+	    		Log.e("Beansight", "VoteTask server error");
 	    		serverError();
 	    		return;
 	    	}
@@ -446,6 +449,7 @@ public class HomeActivity extends Activity {
 	    protected void onPostExecute(UserProfileResponse response) {
 	    	// there was a problem with the API, display a message
 	    	if(response == null ) {
+	    		Log.e("Beansight", "CurrentUserTask server error");
 	    		serverError();
 	    		return;
 	    	}
