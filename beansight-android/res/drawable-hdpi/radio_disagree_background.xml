@@ -6,15 +6,16 @@
 		<layer-list>
 			<item>
 		        <shape>
+   					<!-- grey + red-ish -->
 		            <gradient
-		                android:startColor="#dddcdd"
-		                android:endColor="#c9c8c9"
+		                android:startColor="#b68c8c"
+		                android:endColor="#aa5e5e"
 		                android:angle="270" />
 		            <stroke
 		                android:width="1dp"
-		                android:color="#999999" />
+		                android:color="#aa5e5e" />
 		            <corners
-		                android:radius="2dp" />
+		                android:radius="1dp" />
 		            <padding
 		                android:left="10dp"
 		                android:top="10dp"
@@ -32,15 +33,16 @@
 		<layer-list>
 			<item>
 		        <shape>
+					<!-- light red -->
 		            <gradient
-		                android:startColor="#dddcdd"
-		                android:endColor="#c9c8c9"
+		                android:startColor="#fd6e6e"
+		                android:endColor="#c42e2e"
 		                android:angle="270" />
 		            <stroke
 		                android:width="1dp"
-		                android:color="#999999" />
+		                android:color="#c42e2e" />
 		            <corners
-		                android:radius="2dp" />
+		                android:radius="1dp" />
 		            <padding
 		                android:left="10dp"
 		                android:top="10dp"
@@ -54,19 +56,20 @@
 		</layer-list>
 	</item>
 	
+	<!-- same as pressed, but less intense -->
 	<item android:state_checked="true" android:state_focused="true">
 		<layer-list>
 			<item>
 		        <shape>
 		            <gradient
-		                android:startColor="#dddcdd"
-		                android:endColor="#c9c8c9"
+		                android:startColor="#b47676"
+		                android:endColor="#a44444"
 		                android:angle="270" />
 		            <stroke
 		                android:width="1dp"
-		                android:color="#999999" />
+		                android:color="#a44444" />
 		            <corners
-		                android:radius="2dp" />
+		                android:radius="1dp" />
 		            <padding
 		                android:left="10dp"
 		                android:top="10dp"
@@ -85,14 +88,14 @@
 			<item>
 		        <shape>
 		            <gradient
-		                android:startColor="#dddcdd"
-		                android:endColor="#c9c8c9"
+		                android:startColor="#c75a5a"
+		                android:endColor="#9b2a2a"
 		                android:angle="270" />
 		            <stroke
 		                android:width="1dp"
-		                android:color="#999999" />
+		                android:color="#9b2a2a" />
 		            <corners
-		                android:radius="2dp" />
+		                android:radius="1dp" />
 		            <padding
 		                android:left="10dp"
 		                android:top="10dp"
@@ -118,7 +121,7 @@
 		                android:width="1dp"
 		                android:color="#8c2c2c" />
 		            <corners
-		                android:radius="2dp" />
+		                android:radius="1dp" />
 		            <padding
 		                android:left="10dp"
 		                android:top="10dp"
@@ -144,7 +147,7 @@
 		                android:width="1dp"
 		                android:color="#999999" />
 		            <corners
-		                android:radius="2dp" />
+		                android:radius="1dp" />
 		            <padding
 		                android:left="10dp"
 		                android:top="10dp"
