@@ -24,7 +24,7 @@
 		        </shape>
 			</item>
 			<item>
-				<bitmap android:src="@drawable/disagree_checked_pressed" android:gravity="center"></bitmap>
+				<bitmap android:src="@drawable/disagree" android:gravity="center"></bitmap>
 			</item>
 		</layer-list>
 	</item>
@@ -51,7 +51,7 @@
 		        </shape>
 			</item>
 			<item>
-				<bitmap android:src="@drawable/disagree_notchecked_pressed" android:gravity="center"></bitmap>
+				<bitmap android:src="@drawable/disagree" android:gravity="center"></bitmap>
 			</item>
 		</layer-list>
 	</item>
@@ -78,7 +78,7 @@
 		        </shape>
 			</item>
 			<item>
-				<bitmap android:src="@drawable/disagree_checked_focused" android:gravity="center"></bitmap>
+				<bitmap android:src="@drawable/disagree" android:gravity="center"></bitmap>
 			</item>
 		</layer-list>	
 	</item>
@@ -104,7 +104,7 @@
 		        </shape>
 			</item>
 			<item>
-				<bitmap android:src="@drawable/disagree_notchecked_focused" android:gravity="center"></bitmap>
+				<bitmap android:src="@drawable/disagree" android:gravity="center"></bitmap>
 			</item>
 		</layer-list>
 	</item>
@@ -130,7 +130,7 @@
 		        </shape>
 			</item>
 			<item>
-				<bitmap android:src="@drawable/disagree_checked" android:gravity="center"></bitmap>
+				<bitmap android:src="@drawable/disagree" android:gravity="center"></bitmap>
 			</item>
 		</layer-list>
 	</item>
@@ -156,7 +156,7 @@
 		        </shape>
 			</item>
 			<item>
-				<bitmap android:src="@drawable/disagree_notchecked" android:gravity="center"></bitmap>
+				<bitmap android:src="@drawable/disagree" android:gravity="center"></bitmap>
 			</item>
 		</layer-list>
 	</item>
