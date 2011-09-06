@@ -326,6 +326,8 @@ public class HomeActivity extends Activity {
 	    }
 	    
 	    protected void onPostExecute(InsightListResponse response) {
+	    	fetchingNewInsights = false;
+
 	    	// there was a problem with the API, display a message
 	    	if(response == null ) {
 	    		Log.e("Beansight", "ListTask server error");
@@ -343,7 +345,6 @@ public class HomeActivity extends Activity {
 	    		refreshPager = true;
 	    	}
 	    	
-	    	fetchingNewInsights = false;
 
 	    	// delete loading dialog, if exists
 	    	if( loadingInsightsDialog != null && loadingInsightsDialog.isShowing()) {

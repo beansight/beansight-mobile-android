@@ -7,7 +7,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.beansight.android.api.responses.InsightDetailResponse;
 import com.beansight.android.api.responses.InsightListResponse;
@@ -23,16 +22,13 @@ public class BeansightApi {
 
 	public static final String DOMAIN = "http://www.beansight.com"; // "http://92.243.10.157"; "http://www.beansight.com";
 
-	final private static HttpClient client = new DefaultHttpClient(); 
-	
 	private static HttpRequestBuilder generateRequest(String apiAction, String accessToken) {
+		HttpClient client = new DefaultHttpClient(); 
 		String url = String.format("%s/api/" + apiAction, DOMAIN);
 		return Http.get(url).use(client).data("access_token", accessToken);
 	}
 	
 	public static InsightDetailResponse show(String accessToken, String id) throws NotAuthenticatedException, IOException, ServerErrorException {
-		Log.v("BeansightApi.show", String.format("access_token=%s id=%s" , accessToken, id));
-		
 		InsightDetailResponse insightDetailResponse = null;
 		String result = generateRequest("insights/show", accessToken)
 			.data("id", id)
