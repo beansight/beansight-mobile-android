@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Beansight</string>
+    <string name="title_prediction">Prédiction</string>
+    <string name="menu_logout">Se déconnecter</string>
+    <string name="loading_insights">Chargement des prédictions...</string>
+    <string name="error_notauthenticated">Non authentifié auprès du serveur.</string>
+    <string name="server_error">Erreur du serveur, réessayez plus tard.</string>
+    <string name="loginActivityName">Connexion à Beansight</string>
+</resources>

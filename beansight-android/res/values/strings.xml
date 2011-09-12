@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Beansight</string>
-    <string name="beansightLogin">Beansight: login</string>
-    <string name="show_insights">Show Insights</string>
     <string name="title_prediction">Prediction</string>
     <string name="menu_logout">Logout</string>
     <string name="loading_insights">Loading predictions...</string>
-    <string name="loading_userprofile">Loading user settings...</string>
     <string name="error_notauthenticated">Not authenticated, please login first.</string>
     <string name="server_error">Server error, please retry later.</string>
     <string name="loginActivityName">Beansight login</string>
