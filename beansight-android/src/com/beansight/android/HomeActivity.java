@@ -52,6 +52,8 @@ public class HomeActivity extends Activity {
 	private static final int INSIGHT_NUMBER = 10;
 	/** starts downloading new insight when we are INSIGHT_NUMBER_START_DOWNLOAD insights far from the end of the list */
 	private static final int INSIGHT_NUMBER_START_DOWNLOAD = 5;
+	/** number of milliseconds to wait before the automatic switch to the next prediction */
+	private static final int NEXT_INSIGHT_TIME = 1000;
 
 	// Data
 	/** store the list of downloaded insights */
@@ -218,7 +220,8 @@ public class HomeActivity extends Activity {
 		VoteTaskParams params = new VoteTaskParams(state, insightList.get(currentInsightIndex).getId());
 		new VoteTask().execute(params);
 
-		next();
+		new WaitAndGoNextTask().execute(currentInsightIndex);
+		
     }
     
     private void next() {
@@ -461,6 +464,24 @@ public class HomeActivity extends Activity {
             editor.putString("avatarMedium", 			response.getResponse().getAvatarMedium());
             editor.putString("avatarLarge", 			response.getResponse().getAvatarLarge());
             editor.commit();
+	    }
+	}
+	
+	private class WaitAndGoNextTask extends AsyncTask<Integer, Void, Integer> {
+		@Override
+		protected Integer doInBackground(Integer... votePageIndex ) {
+			try {
+				Thread.sleep(NEXT_INSIGHT_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return votePageIndex[0];
+		}
+		
+	    protected void onPostExecute(Integer votePageIndex) {
+	    	if(currentInsightIndex == votePageIndex.intValue()) {
+	    		next();
+	    	}
 	    }
 	}
 	
