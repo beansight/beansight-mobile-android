@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/agreeDisagreeButtons"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:orientation="horizontal"
+		>
+		
+		<!--The RadioButton drawable is hardcoded to be on the left,
+		the only way to make a radiobutton be a centered image is to use the background (and not drawableTop) -->
+		<RadioButton 
+			android:id="@+id/buttonDisagree" 
+			android:layout_height="fill_parent" 
+			android:layout_width="0dp"
+			android:layout_weight="1" 
+			android:checked="false"
+			android:text=""
+			android:button="@null"
+			android:gravity="center"
+			android:background="@drawable/radio_disagree_background"
+			android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp"
+			android:layout_marginLeft="10dp"
+			></RadioButton>
+			
+		<android.support.v4.view.ViewPager
+			android:id="@+id/insightPager" 
+	    	android:layout_width="0dp" 
+			android:layout_weight="4"
+			android:layout_height="fill_parent"
+		/>
+			
+		<RadioButton 
+			android:id="@+id/buttonAgree" 
+			android:layout_height="fill_parent"
+			android:layout_weight="1" 
+			android:layout_width="0dp"
+			android:checked="false"
+			android:text=""
+			android:button="@null"
+			android:gravity="center"
+			android:background="@drawable/radio_agree_background"
+			android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp"
+			android:layout_marginRight="10dp"	
+			></RadioButton>
+	</RadioGroup>
