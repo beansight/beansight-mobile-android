@@ -1,5 +1,8 @@
 package com.beansight.android;
 
+import greendroid.app.GDActivity;
+import greendroid.widget.NormalActionBarItem;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ import com.beansight.android.api.responses.Meta;
 import com.beansight.android.api.responses.UserProfileResponse;
 import com.beansight.android.models.InsightListItem;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends GDActivity {
 
 	// Views
 	private Context cxt;
@@ -78,7 +81,7 @@ public class HomeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.insight_vote);
+        setActionBarContentView(R.layout.insight_vote);
         
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
 		accessToken = prefs.getString("access_token", null);

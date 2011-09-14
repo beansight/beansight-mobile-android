@@ -9,11 +9,21 @@
         android:targetSdkVersion="7"
 	/>	
 
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<!-- 
+		We use GreenDroid to handle the ActionBar. (https://github.com/cyrilmottier/GreenDroid)
+		It's easy to use, but may need to be rewritten when Android 3.0 comes to phones (to use the official ActionBar API)
+		ActionBarSherlock (http://actionbarsherlock.com) would have been more respectull of Android's ActionBar API
+		but it is a little ugly and requires to use fragments.
+	-->
+	<application 
+		android:icon="@drawable/icon" 
+		android:label="@string/app_name"
+		android:name=".BeansightApplication"
+		>
 	
 		<activity android:name="HomeActivity" 
 			android:label="@string/app_name"
-			android:theme="@android:style/Theme.Light.NoTitleBar"
+			android:theme="@style/Theme.Light.Beansight"
 			> 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
