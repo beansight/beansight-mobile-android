@@ -1,13 +1,12 @@
 package com.beansight.android;
 
 import greendroid.app.GDActivity;
-import greendroid.widget.NormalActionBarItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +57,8 @@ public class HomeActivity extends GDActivity {
 	/** number of milliseconds to wait before the automatic switch to the next prediction */
 	private static final int NEXT_INSIGHT_TIME = 1000;
 
+	private static final int DIALOG_LOADING_INSIGHTS_ID = 0;
+	
 	// Data
 	/** store the list of downloaded insights */
 	private List<InsightListItem> insightList;
@@ -77,10 +78,28 @@ public class HomeActivity extends GDActivity {
 		AGREE, DISAGREE
 	}
 	
+	protected Dialog onCreateDialog(int id) {
+	    Dialog dialog;
+	    switch(id) {
+	    case DIALOG_LOADING_INSIGHTS_ID:
+	    	// show a loading dialog
+	    	String alertTitle = "";
+	    	if(userName != null) {
+	    		alertTitle = userName;
+	    	}
+	    	dialog = ProgressDialog.show(this, alertTitle, getResources().getText(R.string.loading_insights), true);
+	        break;
+	    default:
+	        dialog = null;
+	    }
+	    return dialog;
+	}
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setActionBarContentView(R.layout.insight_vote);
         
 		SharedPreferences prefs = getSharedPreferences(BeansightApplication.BEANSIGHT_PREFS, 0);
@@ -123,13 +142,9 @@ public class HomeActivity extends GDActivity {
 	    	currentInsightIndex = data.currentInsightIndex;
 	    } else {
 	    	// show a loading dialog
-	    	String alertTitle = "";
-	    	if(userName != null) {
-	    		alertTitle = userName;
-	    	}
-	    	loadingInsightsDialog = ProgressDialog.show(this, alertTitle, getResources().getText(R.string.loading_insights), true);
-	    	// Prevent from changing orientation durong the presence of the dialog box
+	    	// Prevent from changing orientation during the presence of the dialog box
 	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+	    	showDialog(DIALOG_LOADING_INSIGHTS_ID);
 	    	fetchNextInsights();
 	    }
     }
@@ -333,6 +348,8 @@ public class HomeActivity extends GDActivity {
 	    
 	    protected void onPostExecute(InsightListResponse response) {
 	    	fetchingNewInsights = false;
+	    	
+    		Log.d("Beansight", "Get Insight List");
 
 	    	// there was a problem with the API, display a message
 	    	if(response == null ) {
@@ -351,11 +368,7 @@ public class HomeActivity extends GDActivity {
 	    		refreshPager = true;
 	    	}
 	    	
-
-	    	// delete loading dialog, if exists
-	    	if( loadingInsightsDialog != null && loadingInsightsDialog.isShowing()) {
-	    		loadingInsightsDialog.dismiss();
-	    	}
+	    	removeDialog(DIALOG_LOADING_INSIGHTS_ID);
 	    	// set the orientation to normal
 	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	    	
