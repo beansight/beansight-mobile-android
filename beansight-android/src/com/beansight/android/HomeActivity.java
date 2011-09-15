@@ -140,7 +140,8 @@ public class HomeActivity extends GDActivity {
 	    if (data != null) { 
 	    	insightList = data.insightList;
 	    	currentInsightIndex = data.currentInsightIndex;
-	    } else {
+	    } 
+	    if(insightList.isEmpty()) {
 	    	// show a loading dialog
 	    	// Prevent from changing orientation during the presence of the dialog box
 	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
